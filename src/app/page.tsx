@@ -13,26 +13,26 @@ export default function Home() {
   const features: FeatureCard[] = [
     {
       id: 1,
-      title: 'AI-Powerd Prompt Enhancement',
-      description: 'Transform vague queries into specific, context-rich prompts that generate better code responses from GitHub Copilot',
+      title: 'AI-Powered Meta Prompt Enhancement',
+      description: 'Transform vague queries into specific, context-rich prompts with advanced meta-prompting techniques that generate performant, maintainable code',
       icon: '/images/img_vector.svg'
     },
     {
       id: 2,
       title: 'One-Click Enhancement',
-      description: 'Seamlessly enhance your prompts with a single button click, without disrupting your coding workflow',
+      description: 'Seamlessly enhance your prompts with a single button click, preserving your development workflow while optimizing LLM response quality',
       icon: '/images/img_icons_24x24.svg'
     },
     {
       id: 3,
       title: 'Custom Enhancement Rules',
-      description: 'Personalize prompts optimization with your own custom instructions to match your coding workflow',
+      description: 'Define your own meta-prompting strategies with custom instructions to match your engineering team\'s workflow and code standards',
       icon: '/images/img_vector_20x20.svg'
     },
     {
       id: 4,
       title: 'GitHub Copilot Integration',
-      description: 'Works directly with GitHub Copilot Chat for a seamless experience across VS Code and other supported environments',
+      description: 'Natively integrates with GitHub Copilot Chat for a seamless experience across VS Code, JetBrains IDEs and other supported environments',
       icon: '/images/img_vector.svg'
     }
   ];
@@ -91,22 +91,27 @@ export default function Home() {
     {
       id: 1,
       question: 'Does OptiPrompt cost money?',
-      answer: 'OptiPrompt offers a free tier with limited features, as well as paid Pro and Business plans with more advanced capabilities.'
+      answer: 'OptiPrompt offers a free tier with limited features, as well as paid Pro and Business plans with more advanced capabilities for teams looking to scale AI-assisted development.'
     },
     {
       id: 2,
       question: 'How does it work?',
-      answer: 'OptiPrompt analyzes your code and conversation context to automatically enhance your prompts for AI coding assistants, resulting in more accurate and helpful code suggestions.'
+      answer: 'OptiPrompt utilizes advanced meta-prompting techniques to analyze your codebase and conversation context, then automatically enhances your prompts to generate more accurate, idiomatic, and maintainable code from AI coding assistants.'
     },
     {
       id: 3,
+      question: 'What is meta prompting?',
+      answer: 'Meta prompting is a technique that creates prompts about prompts, essentially guiding AI to understand developer intent more effectively. OptiPrompt automates this process by analyzing your codebase context and augmenting your prompts with relevant information.'
+    },
+    {
+      id: 4,
       question: 'Can I cancel my subscription?',
       answer: 'Yes, you can cancel your subscription at any time. Your access will continue until the end of your current billing period.'
     },
     {
-      id: 4,
+      id: 5,
       question: 'How does the pricing work for teams?',
-      answer: 'Our Business plan is priced per user per month, with centralized billing and administration for your entire organization.'
+      answer: 'Our Business plan is priced per user per month, with centralized billing and administration for your entire engineering organization.'
     }
   ];
 
@@ -115,35 +120,38 @@ export default function Home() {
       <Header />
       
       {/* Hero Section */}
-      <section className="pt-[103px] bg-gradient-to-b from-[#eaeefe] to-[#183ec2] h-[710px]">
+      <section className="pt-[103px] bg-gradient-to-b from-[#eaeefe] to-[#183ec2] h-[100vh] min-h-[800px] flex items-center">
         <div className="container mx-auto px-12">
-          <div className="pt-[62px]">
+          <div className="pt-0">
             <Tag className="mb-6 bg-white/80 border-[#22222219] text-black">
               coming soon
             </Tag>
             
-            <h1 className="text-[90px] font-bold text-black leading-[90px] max-w-[602px] mb-6">
-              Get better AI code with better prompts
+            <h1 className="text-[90px] font-bold text-black leading-[90px] max-w-[602px] mb-10">
+              Unlock AI's potential with meta prompting
             </h1>
             
-            <p className="text-[22px] text-[#010d3e] max-w-[457px] mb-10">
-              The AI prompt optimizer that makes your coding assistant actually understand what you need.
+            <p className="text-[22px] text-[#010d3e] max-w-[457px] mb-12">
+              OptiPrompt's advanced meta-prompting engine optimizes AI coding assistants to deliver precisely what developers need.
             </p>
             
-            <div className="flex items-center space-x-4">
-              <Button 
-                variant="secondary" className="rounded-[10px] bg-white text-black px-4 py-2 h-[39px]"
-              >
-                Get for free
-              </Button>
+            <div className="flex items-center space-x-6">
+              <Link href="https://marketplace.visualstudio.com/items?itemName=optiprompt-extension" target="_blank" rel="noopener noreferrer">
+                <Button 
+                  variant="secondary" className="rounded-[10px] bg-white text-black px-6 py-3 h-[48px] text-[16px] font-medium flex items-center"
+                >
+                  <Image src="/images/vscode-icon.svg" alt="VS Code" width={24} height={24} className="mr-3" />
+                  Download for VS Code
+                </Button>
+              </Link>
               
               <Button 
-                variant="primary" className="rounded-[10px] bg-black text-white px-4 py-2 h-[39px]"
+                variant="primary" className="rounded-[10px] bg-black text-white px-6 py-3 h-[48px] text-[16px] font-medium"
               >
                 Subscribe
               </Button>
               
-              <Link href="#" className="flex items-center text-[16px] font-medium text-black ml-4">
+              <Link href="#features" className="flex items-center text-[16px] font-medium text-black ml-2">
                 Learn more
                 <Image 
                   src="/images/img_icons.svg" alt="Learn more" 
@@ -158,28 +166,28 @@ export default function Home() {
       </section>
       
       {/* Features Section */}
-      <section id="features" className="bg-gradient-to-b from-white to-[#c1cefa] py-20">
+      <section id="features" className="bg-gradient-to-b from-white to-[#c1cefa] py-32">
         <div className="container mx-auto px-12">
-          <div className="text-center mb-10">
+          <div className="text-center mb-16">
             <Tag className="mb-4 mx-auto bg-white/80 border-[#22222219] text-black">
-              Boost your productivity
+              Engineer-first design
             </Tag>
             
             <h2 className="text-[54px] font-bold text-black leading-[60px] max-w-[540px] mx-auto mb-6">
-              Solve problems faster and more effectlivly
+              Solve complex engineering challenges faster
             </h2>
             
-            <p className="text-[22px] text-[#010d3e] max-w-[535px] mx-auto">
-              Better prompting will save you and your team precious time and money, supercharging your prompts with key information pulled from your code and conversation
+            <p className="text-[22px] text-[#010d3e] max-w-[600px] mx-auto">
+              Our meta-prompting technology saves engineering teams valuable development time by intelligently enhancing prompts with contextual code awareness and best practices
             </p>
           </div>
           
-          <div className="mb-20">
+          <div className="mb-24">
             <Image 
               src="/images/img_screenshot_20250505_at_223813.png" alt="Code Editor Screenshot" 
               width={1100} 
               height={683} 
-              className="mx-auto rounded-lg shadow-lg"
+              className="mx-auto rounded-2xl shadow-xl"
             />
           </div>
           
@@ -193,6 +201,27 @@ export default function Home() {
               />
             ))}
           </div>
+          
+          {/* Extension Download CTA */}
+          <div className="mt-24 bg-white rounded-2xl shadow-xl p-10 max-w-4xl mx-auto text-center">
+            <div className="flex justify-center mb-6">
+              <Image src="/images/vscode-icon.svg" alt="VS Code" width={64} height={64} />
+            </div>
+            <h3 className="text-[36px] font-bold text-black mb-4">
+              Elevate your development workflow today
+            </h3>
+            <p className="text-[18px] text-[#010d3e] max-w-[600px] mx-auto mb-8">
+              Install our VS Code extension and leverage advanced meta-prompting to get higher-quality, production-ready code from your AI assistant. Built by engineers, for engineers.
+            </p>
+            <Link href="https://marketplace.visualstudio.com/items?itemName=optiprompt-extension" target="_blank" rel="noopener noreferrer" className="inline-block">
+              <Button 
+                variant="primary" className="rounded-[10px] bg-black text-white px-8 py-4 text-[18px] font-medium flex items-center mx-auto"
+              >
+                <Image src="/images/vscode-icon.svg" alt="VS Code" width={24} height={24} className="mr-3" />
+                Download for VS Code
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
       
@@ -201,28 +230,24 @@ export default function Home() {
         <div className="container mx-auto px-12">
           <div className="text-center mb-10">
             <Tag className="mb-4 mx-auto bg-white/80 border-[#22222219] text-black">
-              Boost your productivity
+              ROI-driven pricing
             </Tag>
             
             <h2 className="text-[54px] font-bold text-black leading-[60px] max-w-[540px] mx-auto mb-6">
-              A more effective way to work
+              A more effective engineering approach
             </h2>
             
             <p className="text-[22px] text-[#010d3e] max-w-[535px] mx-auto">
-              Effortlessly turn your ideas into a fully functional, responsive,
+              Maximize developer productivity with pricing that scales from individual developers to enterprise engineering teams.
             </p>
           </div>
           
-          <div className="flex flex-wrap justify-center gap-8 mt-20">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20">
             {pricingPlans.map((plan) => (
               <div 
                 key={plan.id} 
-                className={`relative rounded-[24px] border border-[#eff0f6] shadow-md p-10 ${
-                  plan.isPopular ? 'bg-black text-white' : 'bg-white' } ${plan.id === 2 ?'transform -translate-y-4 z-10' : ''}`}
-                style={{ 
-                  width: plan.id === 2 ? '527px' : plan.id === 3 ? '650px' : '351px',
-                  height: plan.id === 3 ? 'auto' : '351px'
-                }}
+                className={`relative rounded-[24px] border border-[#eff0f6] shadow-md p-10 h-full ${
+                  plan.isPopular ? 'bg-black text-white md:transform md:-translate-y-4 md:z-10' : 'bg-white'}`}
               >
                 {plan.isPopular && (
                   <Tag className="absolute top-10 right-10 bg-transparent border-[#ffffff33] text-[#dd7dff]">
@@ -276,13 +301,23 @@ export default function Home() {
       </section>
       
       {/* FAQ Section */}
-      <section id="faq" className="py-20 bg-white">
-        <div className="container mx-auto px-12 max-w-3xl">
-          <h2 className="text-[54px] font-bold text-black text-center mb-10">
-            Frequently asked questions
-          </h2>
+      <section id="faq" className="py-32 bg-gradient-to-b from-white to-[#f0f3ff]">
+        <div className="container mx-auto px-12">
+          <div className="text-center mb-16">
+            <Tag className="mb-4 mx-auto bg-white/80 border-[#22222219] text-black">
+              Common questions
+            </Tag>
+            
+            <h2 className="text-[54px] font-bold text-black leading-[60px] max-w-[640px] mx-auto mb-6">
+              Frequently asked questions
+            </h2>
+            
+            <p className="text-[22px] text-[#010d3e] max-w-[600px] mx-auto mb-16">
+              Get answers to the most common questions about OptiPrompt and how it can help you code more effectively
+            </p>
+          </div>
           
-          <div className="space-y-4">
+          <div className="max-w-3xl mx-auto space-y-6">
             {faqs.map((faq) => (
               <Accordion key={faq.id} title={faq.question}>
                 <p className="text-[16px] text-gray-700">{faq.answer}</p>
@@ -293,27 +328,30 @@ export default function Home() {
       </section>
       
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-b from-white to-[#d2dcff]">
+      <section className="py-32 bg-gradient-to-b from-white to-[#d2dcff]">
         <div className="container mx-auto px-12 text-center">
-          <h2 className="text-[54px] font-bold text-black mb-4">
-            Sign up for free today
+          <h2 className="text-[54px] font-bold text-black mb-6">
+            Supercharge your AI coding assistant
           </h2>
           
-          <p className="text-[16px] text-[#010d3e] max-w-[447px] mx-auto mb-10">
-            Celebrate the joy of accomplishment with an extension designed to improve your workflow
+          <p className="text-[18px] text-[#010d3e] max-w-[550px] mx-auto mb-12">
+            Try the OptiPrompt VS Code extension and see how meta-prompting technology revolutionizes your development workflow
           </p>
           
-          <div className="flex justify-center items-center space-x-4">
-            <Button 
-              variant="primary" className="rounded-[10px] bg-black text-white px-4 py-2"
-            >
-              Sign Up
-            </Button>
+          <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-6">
+            <Link href="https://marketplace.visualstudio.com/items?itemName=optiprompt-extension" target="_blank" rel="noopener noreferrer">
+              <Button 
+                variant="primary" className="rounded-[10px] bg-black text-white px-8 py-3 h-[50px] text-[16px] font-medium flex items-center"
+              >
+                <Image src="/images/vscode-icon.svg" alt="VS Code" width={24} height={24} className="mr-3" />
+                Download for VS Code
+              </Button>
+            </Link>
             
-            <Link href="#" className="flex items-center text-[16px] font-medium text-black">
-              Learn more
+            <Link href="/signup" className="flex items-center text-[16px] font-medium text-black hover:text-blue-600 transition-colors">
+              Sign Up for Free
               <Image 
-                src="/images/img_icons.svg" alt="Learn more" 
+                src="/images/img_icons.svg" alt="Sign Up" 
                 width={20} 
                 height={20} 
                 className="ml-2"

@@ -20,18 +20,18 @@ const Card: React.FC<CardProps> = ({
   hasLearnMore = true
 }) => {
   return (
-    <div className={`flex flex-col ${className}`}>
+    <div className={`flex flex-col p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 ${className}`}>
       {icon && (
-        <div className="mb-2">
-          <Image src={icon} alt={title} width={24} height={24} />
+        <div className="mb-4">
+          <Image src={icon} alt={title} width={32} height={32} />
         </div>
       )}
-      <h3 className="text-[18px] font-bold text-black mb-2">{title}</h3>
-      <p className="text-[16px] text-black mb-4">{description}</p>
+      <h3 className="text-[18px] font-bold text-black mb-3">{title}</h3>
+      <p className="text-[16px] text-black/80 mb-6">{description}</p>
       
       {hasLearnMore && (
         <div className="flex items-center mt-auto">
-          <Link href="#" className="text-[16px] font-medium text-black">
+          <Link href="#" className="text-[16px] font-medium text-black hover:text-blue-600 transition-colors">
             Learn more
           </Link>
           <Image 
