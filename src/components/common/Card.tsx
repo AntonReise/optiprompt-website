@@ -10,6 +10,7 @@ interface CardProps {
   icon?: string;
   className?: string;
   hasLearnMore?: boolean;
+  iconSize?: number;
 }
 
 const Card: React.FC<CardProps> = ({ 
@@ -17,13 +18,14 @@ const Card: React.FC<CardProps> = ({
   description, 
   icon, 
   className = '',
-  hasLearnMore = true
+  hasLearnMore = false,
+  iconSize = 32
 }) => {
   return (
     <div className={`flex flex-col p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 ${className}`}>
       {icon && (
         <div className="mb-4">
-          <Image src={icon} alt={title} width={32} height={32} />
+          <Image src={icon} alt={title} width={iconSize} height={iconSize} className="object-contain" />
         </div>
       )}
       <h3 className="text-[18px] font-bold text-black mb-3">{title}</h3>

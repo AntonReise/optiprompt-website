@@ -13,27 +13,27 @@ export default function Home() {
   const features: FeatureCard[] = [
     {
       id: 1,
-      title: 'AI-Powered Meta Prompt Enhancement',
-      description: 'Transform vague queries into specific, context-rich prompts with advanced meta-prompting techniques that generate performant, maintainable code',
-      icon: '/images/img_vector.svg'
+      title: 'Intelligent Code Context',
+      description: 'Our meta-prompting engine analyzes your codebase to provide AI assistants with perfect context, resulting in code that matches your project\'s patterns and practices.',
+      icon: '/images/github-icon.svg'
     },
     {
       id: 2,
-      title: 'One-Click Enhancement',
-      description: 'Seamlessly enhance your prompts with a single button click, preserving your development workflow while optimizing LLM response quality',
-      icon: '/images/img_icons_24x24.svg'
+      title: 'Frictionless Workflow',
+      description: 'Seamlessly enhance AI-generated code without disrupting your development flow - OptiPrompt integrates directly into your IDE and existing tools.',
+      icon: '/images/vscode-icon.svg'
     },
     {
       id: 3,
-      title: 'Custom Enhancement Rules',
-      description: 'Define your own meta-prompting strategies with custom instructions to match your engineering team\'s workflow and code standards',
-      icon: '/images/img_vector_20x20.svg'
+      title: 'Customizable Standards',
+      description: 'Define your engineering team\'s coding standards and practices as meta-prompting rules that ensure all AI-generated code follows your organization\'s best practices.',
+      icon: '/images/success-icon.svg'
     },
     {
       id: 4,
-      title: 'GitHub Copilot Integration',
-      description: 'Natively integrates with GitHub Copilot Chat for a seamless experience across VS Code, JetBrains IDEs and other supported environments',
-      icon: '/images/img_vector.svg'
+      title: 'Multi-Assistant Compatible',
+      description: 'Works with GitHub Copilot, Claude, ChatGPT and other AI coding assistants to deliver consistent results regardless of which AI you prefer to use.',
+      icon: '/images/chat-icon.svg'
     }
   ];
 
@@ -198,6 +198,7 @@ export default function Home() {
                 title={feature.title}
                 description={feature.description}
                 icon={feature.icon}
+                iconSize={24}
               />
             ))}
           </div>
