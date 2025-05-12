@@ -8,8 +8,8 @@ const Footer: React.FC = () => {
   return (
     <footer className="bg-black text-white py-10">
       <div className="container mx-auto px-5">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
-          <div className="col-span-1 md:col-span-2">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+          <div className="col-span-1 md:col-span-4">
             <Image 
               src="/images/img_optiprompt_2.png" alt="Promptimize Logo" 
               width={159} 
@@ -32,7 +32,7 @@ const Footer: React.FC = () => {
             </div>
           </div>
           
-          <div className="col-span-1">
+          <div className="col-span-1 md:col-span-2">
             <h3 className="text-[14px] font-bold mb-4">Product</h3>
             <ul className="space-y-4">
               <li><Link href="#" className="text-[14px] text-[#7b7b7b] hover:text-white">Features</Link></li>
@@ -43,7 +43,7 @@ const Footer: React.FC = () => {
             </ul>
           </div>
           
-          <div className="col-span-1">
+          <div className="col-span-1 md:col-span-2">
             <h3 className="text-[14px] font-bold mb-4">Company</h3>
             <ul className="space-y-4">
               <li><Link href="#" className="text-[14px] text-[#7b7b7b] hover:text-white">About</Link></li>
@@ -55,7 +55,7 @@ const Footer: React.FC = () => {
             </ul>
           </div>
           
-          <div className="col-span-1">
+          <div className="col-span-1 md:col-span-2">
             <h3 className="text-[14px] font-bold mb-4">Resources</h3>
             <ul className="space-y-4">
               <li><Link href="#" className="text-[14px] text-[#7b7b7b] hover:text-white">Examples</Link></li>
@@ -65,7 +65,7 @@ const Footer: React.FC = () => {
             </ul>
           </div>
           
-          <div className="col-span-1">
+          <div className="col-span-1 md:col-span-2">
             <h3 className="text-[14px] font-bold mb-4">Legal</h3>
             <ul className="space-y-4">
               <li><Link href="#" className="text-[14px] text-[#7b7b7b] hover:text-white">Privacy</Link></li>

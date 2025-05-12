@@ -38,21 +38,13 @@ const Header: React.FC = () => {
           </Link>
         </nav>
         
-        <div className="flex items-center space-x-4">
-          <Link href="https://marketplace.visualstudio.com/items?itemName=optiprompt-extension" target="_blank" rel="noopener noreferrer">
+        <div className="flex items-center">
+          <Link href="#mcp-setup">
             <Button 
-              variant="secondary" className="rounded-[10px] bg-white border border-black text-black px-4 py-2 text-[16px] font-medium flex items-center"
+              variant="primary" className="rounded-[10px] bg-black text-white px-6 py-2 text-[16px] font-medium flex items-center"
             >
-              <Image src="/images/vscode-icon.svg" alt="VS Code" width={20} height={20} className="mr-2" />
-              Download
-            </Button>
-          </Link>
-          
-          <Link href="/signup">
-            <Button 
-              variant="primary" className="rounded-[10px] bg-black text-white px-4 py-2 text-[16px] font-medium"
-            >
-              Sign Up
+              <Image src="/images/chat-icon.svg" alt="MCP" width={20} height={20} className="mr-2" />
+              Setup MCP Server
             </Button>
           </Link>
         </div>
@@ -61,4 +53,4 @@ const Header: React.FC = () => {
   );
 };
 
-export default Header;
+export default Header; 

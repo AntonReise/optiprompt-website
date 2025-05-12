@@ -13,26 +13,26 @@ export default function Home() {
   const features: FeatureCard[] = [
     {
       id: 1,
-      title: 'Intelligent Code Context',
-      description: 'Our meta-prompting engine analyzes your codebase to provide AI assistants with perfect context, resulting in code that matches your project\'s patterns and practices.',
+      title: 'Universal IDE Compatibility',
+      description: 'OptiPrompt\'s MCP server integrates seamlessly with any IDE that supports the Model Context Protocol, including VS Code, Cursor, Windsurf, and more.',
       icon: '/images/github-icon.svg'
     },
     {
       id: 2,
-      title: 'Frictionless Workflow',
-      description: 'Seamlessly enhance AI-generated code without disrupting your development flow - OptiPrompt integrates directly into your IDE and existing tools.',
+      title: 'Intelligent Context Augmentation',
+      description: 'Our advanced meta-prompting engine analyzes your codebase to provide AI assistants with perfect context, resulting in code that matches your project\'s patterns and practices.',
       icon: '/images/vscode-icon.svg'
     },
     {
       id: 3,
       title: 'Customizable Standards',
-      description: 'Define your engineering team\'s coding standards and practices as meta-prompting rules that ensure all AI-generated code follows your organization\'s best practices.',
+      description: 'Define your engineering team\'s coding standards as meta-prompting rules that ensure all AI-generated code follows your organization\'s best practices.',
       icon: '/images/success-icon.svg'
     },
     {
       id: 4,
       title: 'Multi-Assistant Compatible',
-      description: 'Works with GitHub Copilot, Claude, ChatGPT and other AI coding assistants to deliver consistent results regardless of which AI you prefer to use.',
+      description: 'Works with Claude, ChatGPT and other AI coding assistants to deliver consistent results regardless of which AI you prefer to use.',
       icon: '/images/chat-icon.svg'
     }
   ];
@@ -45,7 +45,7 @@ export default function Home() {
       period: '/monthly',
       features: [
         '3 enhancements a day',
-        'Integrates with VS Code, Cursor AI and Windsurf',
+        'Compatible with all MCP-enabled IDEs',
         'Basic support'
       ],
       buttonText: 'Get started for free',
@@ -58,9 +58,9 @@ export default function Home() {
       period: '/monthly',
       features: [
         'Unlimited enhancements',
-        'Integrates with VS Code, Cursor AI and Windsurf',
-        'Early Access to new integrations',
+        'Compatible with all MCP-enabled IDEs',
         'Early Access to new features',
+        'Advanced context optimization',
         'Priority support'
       ],
       buttonText: 'Sign up now',
@@ -76,9 +76,9 @@ export default function Home() {
         'Enforce privacy mode org-wide',
         'Admin dashboard with usage stats',
         'Centralized billing',
-        'unlimited enhancements',
-        'Integrates with VS Code, Cursor AI and Windsurf',
-        'Early Access to new integrations',
+        'Unlimited enhancements',
+        'Compatible with all MCP-enabled IDEs',
+        'Advanced context optimization',
         'Early Access to new features',
         'Priority support'
       ],
@@ -90,18 +90,18 @@ export default function Home() {
   const faqs: FAQ[] = [
     {
       id: 1,
-      question: 'Does OptiPrompt cost money?',
-      answer: 'OptiPrompt offers a free tier with limited features, as well as paid Pro and Business plans with more advanced capabilities for teams looking to scale AI-assisted development.'
+      question: 'What is the Model Context Protocol (MCP)?',
+      answer: 'MCP is an open protocol that standardizes how applications provide context to LLMs. It creates a consistent way for AI models to access your codebase, tools, and other context, regardless of which IDE you use.'
     },
     {
       id: 2,
-      question: 'How does it work?',
-      answer: 'OptiPrompt utilizes advanced meta-prompting techniques to analyze your codebase and conversation context, then automatically enhances your prompts to generate more accurate, idiomatic, and maintainable code from AI coding assistants.'
+      question: 'How does OptiPrompt work?',
+      answer: 'OptiPrompt uses advanced meta-prompting techniques through our MCP server to analyze your codebase and conversation context, then automatically enhances prompts to generate more accurate, idiomatic, and maintainable code from AI coding assistants.'
     },
     {
       id: 3,
-      question: 'What is meta prompting?',
-      answer: 'Meta prompting is a technique that creates prompts about prompts, essentially guiding AI to understand developer intent more effectively. OptiPrompt automates this process by analyzing your codebase context and augmenting your prompts with relevant information.'
+      question: 'What IDEs are compatible with OptiPrompt?',
+      answer: 'OptiPrompt works with any IDE that supports the Model Context Protocol (MCP), including VS Code, Cursor, Claude Desktop, Windsurf, and many others. The list of compatible IDEs continues to grow as MCP adoption increases.'
     },
     {
       id: 4,
@@ -123,30 +123,25 @@ export default function Home() {
       <section className="pt-[103px] bg-gradient-to-b from-[#eaeefe] to-[#183ec2] h-[100vh] min-h-[800px] flex items-center">
         <div className="container mx-auto px-12">
           <div className="pt-0">
-            <Tag className="mb-6 bg-white/80 border-[#22222219] text-black">
-              coming soon
-            </Tag>
             
-            <h1 className="text-[90px] font-bold text-black leading-[90px] max-w-[602px] mb-10">
-              Unlock AI's potential with meta prompting
+            <h1 className="text-[60px] md:text-[90px] font-bold text-black leading-[1.1] md:leading-[90px] max-w-[640px] mb-10">
+              Supercharge AI coding with MCP
             </h1>
             
-            <p className="text-[22px] text-[#010d3e] max-w-[457px] mb-12">
-              OptiPrompt's advanced meta-prompting engine optimizes AI coding assistants to deliver precisely what developers need.
+            <p className="text-[22px] text-[#010d3e] max-w-[500px] mb-12">
+              OptiPrompt's MCP server seamlessly enhances any IDE with advanced meta-prompting, delivering precisely tailored code for your projects.
             </p>
             
             <div className="flex items-center space-x-6">
-              <Link href="https://marketplace.visualstudio.com/items?itemName=optiprompt-extension" target="_blank" rel="noopener noreferrer">
-                <Button 
-                  variant="secondary" className="rounded-[10px] bg-white text-black px-6 py-3 h-[48px] text-[16px] font-medium flex items-center"
-                >
-                  <Image src="/images/vscode-icon.svg" alt="VS Code" width={24} height={24} className="mr-3" />
-                  Download for VS Code
-                </Button>
-              </Link>
+              <Button 
+                variant="secondary" className="rounded-[10px] bg-white text-black px-6 py-3 h-[48px] text-[16px] font-medium flex items-center"
+              >
+                <Image src="/images/chat-icon.svg" alt="MCP Server" width={24} height={24} className="mr-3" />
+                Setup MCP Server
+              </Button>
               
               <Button 
-                variant="primary" className="rounded-[10px] bg-black text-white px-6 py-3 h-[48px] text-[16px] font-medium"
+                variant="primary" className="rounded-[10px] bg-[#2563EB] hover:bg-[#1E40AF] transition-colors text-white px-6 py-3 h-[48px] text-[16px] font-medium"
               >
                 Subscribe
               </Button>
@@ -178,7 +173,7 @@ export default function Home() {
             </h2>
             
             <p className="text-[22px] text-[#010d3e] max-w-[600px] mx-auto">
-              Our meta-prompting technology saves engineering teams valuable development time by intelligently enhancing prompts with contextual code awareness and best practices
+              Our MCP server technology saves engineering teams valuable development time by intelligently enhancing prompts with contextual code awareness and best practices
             </p>
           </div>
           
@@ -203,31 +198,71 @@ export default function Home() {
             ))}
           </div>
           
-          {/* Extension Download CTA */}
-          <div className="mt-24 bg-white rounded-2xl shadow-xl p-10 max-w-4xl mx-auto text-center">
+          {/* MCP Server CTA */}
+          <div id="mcp-setup" className="mt-24 bg-white rounded-2xl shadow-xl p-10 max-w-4xl mx-auto text-center">
             <div className="flex justify-center mb-6">
-              <Image src="/images/vscode-icon.svg" alt="VS Code" width={64} height={64} />
+              <Image src="/images/chat-icon.svg" alt="MCP" width={64} height={64} />
             </div>
             <h3 className="text-[36px] font-bold text-black mb-4">
               Elevate your development workflow today
             </h3>
             <p className="text-[18px] text-[#010d3e] max-w-[600px] mx-auto mb-8">
-              Install our VS Code extension and leverage advanced meta-prompting to get higher-quality, production-ready code from your AI assistant. Built by engineers, for engineers.
+              Set up our MCP server and leverage advanced meta-prompting to get higher-quality, production-ready code from your AI assistant. Compatible with any IDE that supports the Model Context Protocol.
             </p>
-            <Link href="https://marketplace.visualstudio.com/items?itemName=optiprompt-extension" target="_blank" rel="noopener noreferrer" className="inline-block">
-              <Button 
-                variant="primary" className="rounded-[10px] bg-black text-white px-8 py-4 text-[18px] font-medium flex items-center mx-auto"
-              >
-                <Image src="/images/vscode-icon.svg" alt="VS Code" width={24} height={24} className="mr-3" />
-                Download for VS Code
-              </Button>
-            </Link>
+            <Button 
+              variant="primary" className="rounded-[10px] bg-[#2563EB] hover:bg-[#1E40AF] transition-colors text-white px-8 py-4 text-[18px] font-medium flex items-center mx-auto"
+            >
+              <Image src="/images/chat-icon.svg" alt="MCP" width={24} height={24} className="mr-3" />
+              Get Started with OptiPrompt MCP
+            </Button>
+          </div>
+        </div>
+      </section>
+      
+      {/* What is MCP Section */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-12">
+          <div className="text-center mb-16">
+            <Tag className="mb-4 mx-auto bg-white/80 border-[#22222219] text-black">
+              MCP Technology
+            </Tag>
+            
+            <h2 className="text-[54px] font-bold text-black leading-[60px] max-w-[540px] mx-auto mb-6">
+              What is the Model Context Protocol?
+            </h2>
+            
+            <p className="text-[22px] text-[#010d3e] max-w-[700px] mx-auto mb-16">
+              The Model Context Protocol (MCP) is an open standard that connects AI coding assistants with external tools and context sources. Think of MCP as a USB-C port for AI applications.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h3 className="text-[32px] font-bold text-black mb-4">How OptiPrompt MCP Works</h3>
+              <p className="text-[18px] text-[#010d3e] mb-6">
+                OptiPrompt's MCP server analyzes your codebase to provide AI assistants with perfect context for your projects. This ensures that AI-generated code matches your project's patterns and practices.
+              </p>
+              <p className="text-[18px] text-[#010d3e] mb-6">
+                Our server seamlessly integrates with any MCP-compatible IDE, including VS Code, Cursor, Claude Desktop, and more, providing a consistent experience across your entire development workflow.
+              </p>
+              <p className="text-[18px] text-[#010d3e]">
+                With OptiPrompt MCP, you get context-aware coding assistance that understands your project's structure, coding style, and best practices.
+              </p>
+            </div>
+            <div className="rounded-2xl overflow-hidden shadow-xl">
+              <Image 
+                src="/images/mcp_overview.png" alt="MCP Architecture" 
+                width={540} 
+                height={360}
+                className="w-full object-cover" 
+              />
+            </div>
           </div>
         </div>
       </section>
       
       {/* Pricing Section */}
-      <section id="pricing" className="py-20 bg-white">
+      <section id="pricing" className="py-20 bg-[#eaeefe]">
         <div className="container mx-auto px-12">
           <div className="text-center mb-10">
             <Tag className="mb-4 mx-auto bg-white/80 border-[#22222219] text-black">
@@ -243,58 +278,64 @@ export default function Home() {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20 md:items-stretch">
             {pricingPlans.map((plan) => (
               <div 
                 key={plan.id} 
-                className={`relative rounded-[24px] border border-[#eff0f6] shadow-md p-10 h-full ${
-                  plan.isPopular ? 'bg-black text-white md:transform md:-translate-y-4 md:z-10' : 'bg-white'}`}
+                className={`relative rounded-[24px] border border-[#eff0f6] shadow-md p-10 flex flex-col h-full ${
+                  plan.isPopular ? "bg-[#010d3e] text-white" : "bg-white text-black"
+                }`}
               >
                 {plan.isPopular && (
-                  <Tag className="absolute top-10 right-10 bg-transparent border-[#ffffff33] text-[#dd7dff]">
-                    Most Popular
-                  </Tag>
+                  <div className="absolute top-0 right-0 transform translate-x-[0px] -translate-y-[14px]">
+                    <div className="bg-[#2EC973] text-white text-xs font-bold px-6 py-1 rounded-full shadow-md">
+                      MOST POPULAR
+                    </div>
+                  </div>
                 )}
                 
-                <h3 className={`text-[18px] font-bold ${plan.isPopular ? 'text-white/60' : 'text-[#6e6b8f]'} mb-2`}>
-                  {plan.name}
-                </h3>
-                
-                <div className="flex items-end mb-6">
-                  <span className={`text-[54px] font-bold ${plan.isPopular ? 'text-white' : 'text-black'}`}>
-                    {plan.price}
-                  </span>
-                  <span className={`text-[18px] font-bold ml-1 ${plan.isPopular ? 'text-[#999999]' : 'text-[#6e6b8f]'}`}>
-                    {plan.period}
-                  </span>
+                <div>
+                  <h3 className={`text-3xl font-bold ${plan.isPopular ? "text-white" : "text-black"}`}>
+                    {plan.name}
+                  </h3>
                 </div>
                 
-                <Button 
-                  variant={plan.isPopular ? 'secondary' : 'primary'} 
-                  className={`w-full rounded-[10px] ${
-                    plan.isPopular 
-                      ? 'bg-white text-black' :'bg-black text-white'
-                  } py-2 mb-6`}
-                >
-                  {plan.buttonText}
-                </Button>
+                <div className="mt-2 mb-8">
+                  <p className={`text-5xl font-bold ${plan.isPopular ? "text-white" : "text-black"}`}>
+                    {plan.price}
+                    <span className="text-xl font-normal ml-1">{plan.period}</span>
+                  </p>
+                </div>
                 
-                <ul className="space-y-4">
-                  {plan.features.map((feature, index) => (
-                    <li key={index} className="flex items-start">
-                      <Image 
-                        src={plan.isPopular ? '/images/img_icons_2.svg' : '/images/img_icons_1.svg'} 
-                        alt="Check" 
-                        width={24} 
-                        height={24} 
-                        className="mr-4 mt-0.5"
-                      />
-                      <span className={`text-[14px] ${plan.isPopular ? 'text-white' : 'text-black'}`}>
-                        {feature}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
+                <div className="flex-grow">
+                  <ul className="space-y-4">
+                    {plan.features.map((feature, index) => (
+                      <li key={index} className="flex items-start">
+                        <div className="mr-2 mt-1">
+                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M13.3332 4L5.99984 11.3333L2.6665 8" stroke={plan.isPopular ? "#ffffff" : "#010d3e"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </div>
+                        <span className="text-base">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                
+                <div className="mt-8">
+                  <Button 
+                    variant={plan.buttonVariant}
+                    className={`w-full rounded-[10px] py-3 text-[16px] font-medium ${
+                      plan.isPopular
+                        ? "bg-white text-black hover:bg-gray-100"
+                        : plan.buttonVariant === "primary"
+                        ? "bg-[#2563EB] text-white hover:bg-[#1E40AF]"
+                        : "bg-[#010d3e] text-white hover:bg-[#0a1956]"
+                    }`}
+                  >
+                    {plan.buttonText}
+                  </Button>
+                </div>
               </div>
             ))}
           </div>
@@ -302,19 +343,19 @@ export default function Home() {
       </section>
       
       {/* FAQ Section */}
-      <section id="faq" className="py-32 bg-gradient-to-b from-white to-[#f0f3ff]">
+      <section id="faq" className="py-20 bg-white">
         <div className="container mx-auto px-12">
           <div className="text-center mb-16">
             <Tag className="mb-4 mx-auto bg-white/80 border-[#22222219] text-black">
-              Common questions
+              Questions
             </Tag>
             
-            <h2 className="text-[54px] font-bold text-black leading-[60px] max-w-[640px] mx-auto mb-6">
+            <h2 className="text-[54px] font-bold text-black leading-[60px] max-w-[540px] mx-auto mb-6">
               Frequently asked questions
             </h2>
             
-            <p className="text-[22px] text-[#010d3e] max-w-[600px] mx-auto mb-16">
-              Get answers to the most common questions about OptiPrompt and how it can help you code more effectively
+            <p className="text-[22px] text-[#010d3e] max-w-[600px] mx-auto">
+              Everything you need to know about OptiPrompt's MCP server solution
             </p>
           </div>
           
@@ -329,35 +370,31 @@ export default function Home() {
       </section>
       
       {/* CTA Section */}
-      <section className="py-32 bg-gradient-to-b from-white to-[#d2dcff]">
-        <div className="container mx-auto px-12 text-center">
-          <h2 className="text-[54px] font-bold text-black mb-6">
-            Supercharge your AI coding assistant
-          </h2>
-          
-          <p className="text-[18px] text-[#010d3e] max-w-[550px] mx-auto mb-12">
-            Try the OptiPrompt VS Code extension and see how meta-prompting technology revolutionizes your development workflow
-          </p>
-          
-          <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-6">
-            <Link href="https://marketplace.visualstudio.com/items?itemName=optiprompt-extension" target="_blank" rel="noopener noreferrer">
+      <section className="py-20 bg-gradient-to-r from-[#eaeefe] to-[#c1cefa]">
+        <div className="container mx-auto px-12">
+          <div className="bg-white rounded-[24px] p-12 flex flex-col items-center text-center">
+            <h2 className="text-[48px] font-bold text-black mb-6">
+              Ready to supercharge your AI coding?
+            </h2>
+            <p className="text-[22px] text-[#010d3e] max-w-[600px] mb-10">
+              Join thousands of developers using OptiPrompt's MCP server to enhance their AI coding experience across any IDE.
+            </p>
+            <div className="flex gap-6">
               <Button 
-                variant="primary" className="rounded-[10px] bg-black text-white px-8 py-3 h-[50px] text-[16px] font-medium flex items-center"
+                variant="primary" 
+                className="rounded-[10px] bg-[#2563EB] hover:bg-[#1E40AF] transition-colors text-white px-8 py-3 text-[18px] font-medium"
               >
-                <Image src="/images/vscode-icon.svg" alt="VS Code" width={24} height={24} className="mr-3" />
-                Download for VS Code
+                Get Started Free
               </Button>
-            </Link>
-            
-            <Link href="/signup" className="flex items-center text-[16px] font-medium text-black hover:text-blue-600 transition-colors">
-              Sign Up for Free
-              <Image 
-                src="/images/img_icons.svg" alt="Sign Up" 
-                width={20} 
-                height={20} 
-                className="ml-2"
-              />
-            </Link>
+              <Link href="/contact">
+                <Button 
+                  variant="secondary" 
+                  className="rounded-[10px] bg-white border border-black text-black px-8 py-3 text-[18px] font-medium"
+                >
+                  Contact Sales
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
