@@ -24,6 +24,9 @@ const Header: React.FC = () => {
           <Link href="/" className="text-[16px] text-[#00000099] hover:text-black font-normal">
             Home
           </Link>
+          <Link href="/setup" className="text-[16px] text-[#00000099] hover:text-black font-normal">
+            Setup
+          </Link>
           <Link href="#features" className="text-[16px] text-[#00000099] hover:text-black font-normal">
             Features
           </Link>
@@ -39,12 +42,12 @@ const Header: React.FC = () => {
         </nav>
         
         <div className="flex items-center">
-          <Link href="#mcp-setup">
+          <Link href="/login">
             <Button 
               variant="primary" className="rounded-[10px] bg-black text-white px-6 py-2 text-[16px] font-medium flex items-center"
             >
-              <Image src="/images/chat-icon.svg" alt="MCP" width={20} height={20} className="mr-2" />
-              Setup MCP Server
+              <Image src="/images/chat-icon.svg" alt="Login" width={20} height={20} className="mr-2" />
+              Login
             </Button>
           </Link>
         </div>

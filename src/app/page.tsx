@@ -133,12 +133,14 @@ export default function Home() {
             </p>
             
             <div className="flex items-center space-x-6">
-              <Button 
-                variant="secondary" className="rounded-[10px] bg-white text-black px-6 py-3 h-[48px] text-[16px] font-medium flex items-center"
-              >
-                <Image src="/images/chat-icon.svg" alt="MCP Server" width={24} height={24} className="mr-3" />
-                Setup MCP Server
-              </Button>
+              <Link href="/login">
+                <Button 
+                  variant="secondary" className="rounded-[10px] bg-white text-black px-6 py-3 h-[48px] text-[16px] font-medium flex items-center"
+                >
+                  <Image src="/images/chat-icon.svg" alt="Login" width={24} height={24} className="mr-3" />
+                  Login
+                </Button>
+              </Link>
               
               <Button 
                 variant="primary" className="rounded-[10px] bg-[#2563EB] hover:bg-[#1E40AF] transition-colors text-white px-6 py-3 h-[48px] text-[16px] font-medium"
