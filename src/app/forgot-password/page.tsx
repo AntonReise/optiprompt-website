@@ -8,6 +8,7 @@ import Footer from '@/components/common/Footer';
 import Button from '@/components/ui/Button';
 import InputField from '@/components/ui/InputField';
 import { isSupabaseConfigured } from '@/lib/supabase';
+import { resetPasswordForEmail } from '@/lib/auth';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -38,18 +39,23 @@ export default function ForgotPassword() {
     }
 
     try {
-      // TODO: Replace with actual Supabase password reset once configured
-      if (isSupabaseConfigured()) {
-        // Actual Supabase password reset will go here
-        // const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        //   redirectTo: `${window.location.origin}/reset-password`,
-        // });
-        // if (error) throw error;
-        setIsSuccess(true);
-      } else {
-        // Placeholder: show message that Supabase needs to be configured
+      if (!isSupabaseConfigured()) {
         setError('Password reset is not yet configured. Please set up Supabase to enable this feature.');
+        setIsSubmitting(false);
+        return;
       }
+
+      const { error } = await resetPasswordForEmail(
+        email,
+        `${window.location.origin}/reset-password`
+      );
+
+      if (error) {
+        setError(error.message || 'An error occurred. Please try again.');
+        return;
+      }
+
+      setIsSuccess(true);
     } catch (err: any) {
       setError(err.message || 'An error occurred. Please try again.');
     } finally {
@@ -117,6 +123,7 @@ export default function ForgotPassword() {
                     value={email} 
                     onChange={handleChange} 
                     placeholder="you@example.com" 
+                    helpText="Enter the email address associated with your account"
                     error={error && !error.includes('configured') ? error : undefined}
                     className="mb-8"
                     required 

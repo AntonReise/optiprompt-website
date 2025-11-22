@@ -11,10 +11,11 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@dhiwise/component-tagger": "^1.0.3",
+    "@supabase/supabase-js": "^2.84.0",
     "next": "15.2.4",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "@dhiwise/component-tagger": "^1.0.3"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@types/node": "^20",

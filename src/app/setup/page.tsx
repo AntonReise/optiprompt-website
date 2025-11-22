@@ -2,8 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import Header from '@/components/common/Header';
-import Footer from '@/components/common/Footer';
+import MainLayout from '@/components/layouts/MainLayout';
 import Tag from '@/components/ui/Tag';
 import Button from '@/components/ui/Button';
 import Image from 'next/image';
@@ -11,8 +10,7 @@ import { isSupabaseConfigured } from '@/lib/supabase';
 
 export default function Setup() {
   return (
-    <main className="min-h-screen">
-      <Header />
+    <MainLayout>
       
       {/* Hero Section */}
       <section className="pt-[103px] bg-gradient-to-b from-[#eaeefe] to-[#183ec2] h-[50vh] min-h-[400px] flex items-center">
@@ -341,9 +339,7 @@ Always follow this workflow whenever it would improve reasoning quality.`}</code
           </div>
         </div>
       </section>
-      
-      <Footer />
-    </main>
+    </MainLayout>
   );
 }
 

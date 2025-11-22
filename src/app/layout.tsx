@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter, DM_Sans } from 'next/font/google';
 import '@/styles/index.css';
+import { AuthProvider } from '@/contexts/AuthContext';
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -31,10 +32,12 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body className="font-sans">
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
         <script id="dhws-errorTracker" src="/dhws-error-tracker.js"></script>
-  <script id="dhws-elementInspector" src="/dhws-web-inspector.js"></script>
-</body>
+        <script id="dhws-elementInspector" src="/dhws-web-inspector.js"></script>
+      </body>
     </html>
   );
 }

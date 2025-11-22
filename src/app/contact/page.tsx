@@ -3,8 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import Header from '@/components/common/Header';
-import Footer from '@/components/common/Footer';
+import MainLayout from '@/components/layouts/MainLayout';
 import Button from '@/components/ui/Button';
 import Tag from '@/components/ui/Tag';
 import InputField from '@/components/ui/InputField';
@@ -46,8 +45,7 @@ export default function Contact() {
   };
 
   return (
-    <main className="min-h-screen">
-      <Header />
+    <MainLayout>
       
       {/* Hero Section */}
       <section className="pt-[103px] bg-gradient-to-b from-[#eaeefe] to-[#183ec2] h-[50vh] min-h-[400px] flex items-center">
@@ -99,7 +97,7 @@ export default function Contact() {
                       name="name" 
                       value={formState.name} 
                       onChange={handleChange} 
-                      placeholder="John Doe" 
+                      placeholder="Enter your full name" 
                       required 
                     />
                     <InputField 
@@ -108,7 +106,8 @@ export default function Contact() {
                       type="email" 
                       value={formState.email} 
                       onChange={handleChange} 
-                      placeholder="john@example.com" 
+                      placeholder="you@example.com" 
+                      helpText="We'll respond to this email address"
                       required 
                     />
                   </div>
@@ -118,7 +117,7 @@ export default function Contact() {
                     name="subject" 
                     value={formState.subject} 
                     onChange={handleChange} 
-                    placeholder="How can we help you?" 
+                    placeholder="Brief description of your inquiry" 
                     className="mb-6"
                     required 
                   />
@@ -128,7 +127,8 @@ export default function Contact() {
                     name="message" 
                     value={formState.message} 
                     onChange={handleChange} 
-                    placeholder="Your message here..." 
+                    placeholder="Describe your question or feedback in detail..." 
+                    rows={8}
                     className="mb-8"
                     required 
                   />
@@ -243,8 +243,6 @@ export default function Contact() {
           </div>
         </div>
       </section>
-      
-      <Footer />
-    </main>
+    </MainLayout>
   );
 } 

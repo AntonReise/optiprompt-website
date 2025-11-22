@@ -8,6 +8,7 @@ import Footer from '@/components/common/Footer';
 import Button from '@/components/ui/Button';
 import InputField from '@/components/ui/InputField';
 import { isSupabaseConfigured } from '@/lib/supabase';
+import { signUpWithPassword } from '@/lib/auth';
 
 export default function Signup() {
   const router = useRouter();
@@ -56,22 +57,33 @@ export default function Signup() {
     }
 
     try {
-      // TODO: Replace with actual Supabase authentication once configured
-      // For now, this redirects to Supabase signup URL if configured
-      if (isSupabaseConfigured()) {
-        // Redirect to Supabase signup
-        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-        const redirectUrl = `${window.location.origin}/auth/callback`;
-        const signupUrl = `${supabaseUrl}/auth/v1/signup?redirect_to=${encodeURIComponent(redirectUrl)}`;
-        
-        // For now, show a message that actual implementation will go here
-        // Once Supabase is configured, uncomment the redirect:
-        // window.location.href = signupUrl;
-        
-        setErrors({ general: 'Supabase is configured but signup functionality needs to be enabled. Please contact support.' });
-      } else {
-        // Placeholder: show message that Supabase needs to be configured
+      if (!isSupabaseConfigured()) {
         setErrors({ general: 'Authentication is not yet configured. Please set up Supabase to enable signup.' });
+        setIsSubmitting(false);
+        return;
+      }
+
+      const { user, session, error } = await signUpWithPassword(
+        formState.email,
+        formState.password,
+        { redirectTo: `${window.location.origin}/account` }
+      );
+
+      if (error) {
+        setErrors({ general: error.message || 'An error occurred during signup. Please try again.' });
+        return;
+      }
+
+      if (user) {
+        // Check if email confirmation is required
+        if (!session) {
+          // Email confirmation required
+          setErrors({ general: 'Please check your email to confirm your account before signing in.' });
+        } else {
+          // Auto-signed in, redirect to account
+          router.push('/account');
+          router.refresh();
+        }
       }
     } catch (error: any) {
       setErrors({ general: error.message || 'An error occurred during signup. Please try again.' });
@@ -108,6 +120,7 @@ export default function Signup() {
                   value={formState.email} 
                   onChange={handleChange} 
                   placeholder="you@example.com" 
+                  helpText="We'll use this to send you account updates"
                   error={errors.email}
                   className="mb-6"
                   required 
@@ -119,7 +132,8 @@ export default function Signup() {
                   type="password" 
                   value={formState.password} 
                   onChange={handleChange} 
-                  placeholder="Create a password (min. 8 characters)" 
+                  placeholder="Create a strong password" 
+                  helpText="Must be at least 8 characters long"
                   error={errors.password}
                   className="mb-6"
                   required 
@@ -131,7 +145,7 @@ export default function Signup() {
                   type="password" 
                   value={formState.confirmPassword} 
                   onChange={handleChange} 
-                  placeholder="Confirm your password" 
+                  placeholder="Re-enter your password" 
                   error={errors.confirmPassword}
                   className="mb-8"
                   required 

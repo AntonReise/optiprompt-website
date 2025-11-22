@@ -8,6 +8,7 @@ import Footer from '@/components/common/Footer';
 import Button from '@/components/ui/Button';
 import InputField from '@/components/ui/InputField';
 import { isSupabaseConfigured } from '@/lib/supabase';
+import { signInWithPassword } from '@/lib/auth';
 
 export default function Login() {
   const router = useRouter();
@@ -50,20 +51,26 @@ export default function Login() {
     }
 
     try {
-      // TODO: Replace with actual Supabase authentication once configured
-      // For now, this is a placeholder that redirects
-      if (isSupabaseConfigured()) {
-        // Actual Supabase login will go here
-        // const { data, error } = await supabase.auth.signInWithPassword({
-        //   email: formState.email,
-        //   password: formState.password,
-        // });
-        // if (error) throw error;
-        // router.push('/dashboard');
-        setErrors({ general: 'Supabase is configured but login functionality needs to be enabled. Please contact support.' });
-      } else {
-        // Placeholder: just show a message that Supabase needs to be configured
+      if (!isSupabaseConfigured()) {
         setErrors({ general: 'Authentication is not yet configured. Please set up Supabase to enable login.' });
+        setIsSubmitting(false);
+        return;
+      }
+
+      const { user, session, error } = await signInWithPassword(
+        formState.email,
+        formState.password
+      );
+
+      if (error) {
+        setErrors({ general: error.message || 'Invalid email or password. Please try again.' });
+        return;
+      }
+
+      if (user && session) {
+        // Successful login - redirect to account page
+        router.push('/account');
+        router.refresh();
       }
     } catch (error: any) {
       setErrors({ general: error.message || 'An error occurred during login. Please try again.' });
@@ -118,9 +125,12 @@ export default function Login() {
                 />
                 
                 <div className="flex items-center justify-between mb-8">
-                  <label className="flex items-center">
-                    <input type="checkbox" className="mr-2" />
-                    <span className="text-sm text-gray-600">Remember me</span>
+                  <label className="flex items-center cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      className="w-4 h-4 text-[#2563EB] border-gray-300 rounded focus:ring-[#2563EB] focus:ring-2 cursor-pointer" 
+                    />
+                    <span className="text-sm text-gray-600 ml-2">Remember me</span>
                   </label>
                   <Link href="/forgot-password" className="text-sm text-[#2563EB] hover:underline">
                     Forgot password?

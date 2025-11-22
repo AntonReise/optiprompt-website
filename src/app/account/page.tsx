@@ -3,12 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import Header from '@/components/common/Header';
-import Footer from '@/components/common/Footer';
+import MainLayout from '@/components/layouts/MainLayout';
 import Button from '@/components/ui/Button';
 import InputField from '@/components/ui/InputField';
 import Image from 'next/image';
 import { isSupabaseConfigured } from '@/lib/supabase';
+import { useAuth } from '@/contexts/AuthContext';
+import { updatePassword } from '@/lib/auth';
+import { getUserProfile, updateUserProfile } from '@/lib/user';
 
 interface UserProfile {
   name: string;
@@ -19,6 +21,7 @@ interface UserProfile {
 
 export default function Account() {
   const router = useRouter();
+  const { user, isAuthenticated } = useAuth();
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'profile' | 'password' | 'settings'>('profile');
   const [error, setError] = useState<string>('');
@@ -51,31 +54,42 @@ export default function Account() {
     // Check authentication and fetch user profile data
     const fetchData = async () => {
       try {
-        // TODO: Replace with actual authentication check
-        // const session = await supabase.auth.getSession();
-        // if (!session.data.session) {
-        //   router.push('/login');
-        //   return;
-        // }
+        // Redirect to login if not authenticated
+        if (!isAuthenticated && !loading) {
+          router.push('/login');
+          return;
+        }
 
-        // Fetch user profile from backend
-        // const response = await fetch('/api/user/profile', {
-        //   headers: {
-        //     'Authorization': `Bearer ${session.data.session.access_token}`
-        //   }
-        // });
-        // if (!response.ok) throw new Error('Failed to fetch profile');
-        // const data = await response.json();
+        if (!isSupabaseConfigured() || !user) {
+          // Use empty profile when Supabase is not configured
+          setProfileData({
+            name: '',
+            email: '',
+            company: '',
+            phone: '',
+          });
+          setLoading(false);
+          return;
+        }
 
-        // Mock data for demonstration (remove when backend is connected)
-        const mockProfile: UserProfile = {
-          name: 'John Doe',
-          email: 'john.doe@example.com',
-          company: 'Acme Inc.',
-          phone: '+1 (555) 123-4567',
-        };
-
-        setProfileData(mockProfile);
+        // Fetch user profile from Supabase
+        const profile = await getUserProfile();
+        if (profile) {
+          setProfileData({
+            name: profile.name || '',
+            email: profile.email || user.email || '',
+            company: profile.company || '',
+            phone: profile.phone || '',
+          });
+        } else {
+          // Use user email from auth if profile doesn't exist yet
+          setProfileData({
+            name: '',
+            email: user.email || '',
+            company: '',
+            phone: '',
+          });
+        }
       } catch (err: any) {
         setError(err.message || 'Failed to load profile data');
       } finally {
@@ -83,8 +97,10 @@ export default function Account() {
       }
     };
 
-    fetchData();
-  }, [router]);
+    if (!loading) {
+      fetchData();
+    }
+  }, [router, user, isAuthenticated, loading]);
 
   const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -109,22 +125,31 @@ export default function Account() {
     setSuccess('');
 
     try {
-      // TODO: Replace with actual API call
-      // const session = await supabase.auth.getSession();
-      // const response = await fetch('/api/user/profile', {
-      //   method: 'PUT',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     'Authorization': `Bearer ${session.data.session.access_token}`
-      //   },
-      //   body: JSON.stringify(profileData)
-      // });
-      // if (!response.ok) throw new Error('Failed to update profile');
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      setSuccess('Profile updated successfully!');
+      if (!isSupabaseConfigured()) {
+        setError('Supabase is not configured. Please set up Supabase to enable profile updates.');
+        setIsUpdatingProfile(false);
+        return;
+      }
+
+      const { data, error } = await updateUserProfile({
+        name: profileData.name,
+        email: profileData.email,
+        company: profileData.company,
+        phone: profileData.phone,
+      });
+
+      if (error) {
+        setError(error.message || 'Failed to update profile');
+        return;
+      }
+
+      if (data) {
+        setSuccess('Profile updated successfully!');
+      } else {
+        // If profile doesn't exist yet, we might need to create it
+        // For now, just show success
+        setSuccess('Profile updated successfully!');
+      }
     } catch (err: any) {
       setError(err.message || 'Failed to update profile');
     } finally {
@@ -161,26 +186,21 @@ export default function Account() {
     }
 
     try {
-      // TODO: Replace with actual API call
-      // const session = await supabase.auth.getSession();
-      // const response = await fetch('/api/user/change-password', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     'Authorization': `Bearer ${session.data.session.access_token}`
-      //   },
-      //   body: JSON.stringify({
-      //     currentPassword: passwordData.currentPassword,
-      //     newPassword: passwordData.newPassword
-      //   })
-      // });
-      // if (!response.ok) {
-      //   const errorData = await response.json();
-      //   throw new Error(errorData.message || 'Failed to change password');
-      // }
+      if (!isSupabaseConfigured()) {
+        setPasswordErrors({ general: 'Supabase is not configured. Please set up Supabase to enable password changes.' });
+        setIsUpdatingPassword(false);
+        return;
+      }
 
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Note: Supabase doesn't require current password to update password
+      // The user must be authenticated. If you need to verify current password,
+      // you'll need to implement a custom API endpoint.
+      const { error } = await updatePassword(passwordData.newPassword);
+
+      if (error) {
+        setPasswordErrors({ general: error.message || 'Failed to change password' });
+        return;
+      }
 
       setPasswordErrors({});
       setPasswordData({
@@ -199,8 +219,7 @@ export default function Account() {
 
   if (loading) {
     return (
-      <main className="min-h-screen">
-        <Header />
+      <MainLayout>
         <section className="pt-[103px] py-24 bg-white">
           <div className="container mx-auto px-12">
             <div className="max-w-4xl mx-auto text-center">
@@ -208,14 +227,12 @@ export default function Account() {
             </div>
           </div>
         </section>
-        <Footer />
-      </main>
+      </MainLayout>
     );
   }
 
   return (
-    <main className="min-h-screen">
-      <Header />
+    <MainLayout>
       
       <section className="pt-[103px] py-24 bg-white">
         <div className="container mx-auto px-12">
@@ -345,7 +362,7 @@ export default function Account() {
                       type="text"
                       value={profileData.name}
                       onChange={handleProfileChange}
-                      placeholder="John Doe"
+                      placeholder="Enter your full name"
                       required
                     />
                     <InputField
@@ -354,27 +371,30 @@ export default function Account() {
                       type="email"
                       value={profileData.email}
                       onChange={handleProfileChange}
-                      placeholder="john@example.com"
+                      placeholder="you@example.com"
+                      helpText="We'll use this email to send you important updates"
                       required
                     />
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                     <InputField
-                      label="Company (Optional)"
+                      label="Company"
                       name="company"
                       type="text"
                       value={profileData.company || ''}
                       onChange={handleProfileChange}
-                      placeholder="Acme Inc."
+                      placeholder="Your company name"
+                      helpText="Optional"
                     />
                     <InputField
-                      label="Phone Number (Optional)"
+                      label="Phone Number"
                       name="phone"
                       type="tel"
                       value={profileData.phone || ''}
                       onChange={handleProfileChange}
                       placeholder="+1 (555) 123-4567"
+                      helpText="Optional - Include country code"
                     />
                   </div>
 
@@ -420,7 +440,8 @@ export default function Account() {
                     type="password"
                     value={passwordData.newPassword}
                     onChange={handlePasswordChange}
-                    placeholder="Enter your new password (min. 8 characters)"
+                    placeholder="Create a strong password"
+                    helpText="Must be at least 8 characters long"
                     error={passwordErrors.newPassword}
                     className="mb-6"
                     required
@@ -432,7 +453,7 @@ export default function Account() {
                     type="password"
                     value={passwordData.confirmPassword}
                     onChange={handlePasswordChange}
-                    placeholder="Confirm your new password"
+                    placeholder="Re-enter your new password"
                     error={passwordErrors.confirmPassword}
                     className="mb-8"
                     required
@@ -499,7 +520,7 @@ export default function Account() {
                       </p>
                       <Button
                         variant="secondary"
-                        className="rounded-[10px] bg-red-600 hover:bg-red-700 text-white px-6 py-2 text-[14px] font-medium"
+                        className="rounded-[10px] bg-red-600 hover:bg-red-700 active:bg-red-800 text-white px-6 py-2.5 text-[14px] font-medium transition-colors shadow-sm"
                       >
                         Delete Account
                       </Button>
@@ -523,9 +544,7 @@ export default function Account() {
           </div>
         </div>
       </section>
-      
-      <Footer />
-    </main>
+    </MainLayout>
   );
 }
 

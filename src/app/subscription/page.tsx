@@ -3,12 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import Header from '@/components/common/Header';
-import Footer from '@/components/common/Footer';
+import MainLayout from '@/components/layouts/MainLayout';
 import Button from '@/components/ui/Button';
 import Tag from '@/components/ui/Tag';
 import Image from 'next/image';
 import { isSupabaseConfigured } from '@/lib/supabase';
+import { useAuth } from '@/contexts/AuthContext';
+import { getUserSubscription, getUserUsage, createStripePortalSession } from '@/lib/subscription';
 
 interface SubscriptionData {
   plan: 'free' | 'pro' | 'business';
@@ -26,6 +27,7 @@ interface UsageData {
 
 export default function Subscription() {
   const router = useRouter();
+  const { user, isAuthenticated, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(true);
   const [subscription, setSubscription] = useState<SubscriptionData | null>(null);
   const [usage, setUsage] = useState<UsageData | null>(null);
@@ -36,48 +38,63 @@ export default function Subscription() {
     // Check authentication and fetch subscription/usage data
     const fetchData = async () => {
       try {
-        // TODO: Replace with actual authentication check
-        // const session = await supabase.auth.getSession();
-        // if (!session.data.session) {
-        //   router.push('/login');
-        //   return;
-        // }
+        // Redirect to login if not authenticated
+        if (!authLoading && !isAuthenticated) {
+          router.push('/login');
+          return;
+        }
 
-        // Fetch subscription data from backend
-        // const subscriptionResponse = await fetch('/api/subscription', {
-        //   headers: {
-        //     'Authorization': `Bearer ${session.data.session.access_token}`
-        //   }
-        // });
-        // if (!subscriptionResponse.ok) throw new Error('Failed to fetch subscription');
-        // const subscriptionData = await subscriptionResponse.json();
+        if (!isSupabaseConfigured() || !user) {
+          // Use mock data when Supabase is not configured
+          const mockSubscription: SubscriptionData = {
+            plan: 'pro',
+            status: 'active',
+            currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+            cancelAtPeriodEnd: false,
+          };
 
-        // Fetch usage data from backend
-        // const usageResponse = await fetch('/api/usage', {
-        //   headers: {
-        //     'Authorization': `Bearer ${session.data.session.access_token}`
-        //   }
-        // });
-        // if (!usageResponse.ok) throw new Error('Failed to fetch usage');
-        // const usageData = await usageResponse.json();
+          const mockUsage: UsageData = {
+            totalEnhancements: -1,
+            usedEnhancements: 247,
+            remainingEnhancements: null,
+            resetDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          };
 
-        // Mock data for demonstration (remove when backend is connected)
-        const mockSubscription: SubscriptionData = {
-          plan: 'pro',
-          status: 'active',
-          currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-          cancelAtPeriodEnd: false,
-        };
+          setSubscription(mockSubscription);
+          setUsage(mockUsage);
+          setLoading(false);
+          return;
+        }
 
-        const mockUsage: UsageData = {
-          totalEnhancements: -1, // -1 means unlimited
-          usedEnhancements: 247,
-          remainingEnhancements: null,
-          resetDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-        };
+        // Fetch real data from Supabase
+        const [subscriptionData, usageData] = await Promise.all([
+          getUserSubscription(),
+          getUserUsage(),
+        ]);
 
-        setSubscription(mockSubscription);
-        setUsage(mockUsage);
+        if (subscriptionData) {
+          setSubscription(subscriptionData);
+        } else {
+          // Default to free plan if no subscription found
+          setSubscription({
+            plan: 'free',
+            status: 'active',
+            currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+            cancelAtPeriodEnd: false,
+          });
+        }
+
+        if (usageData) {
+          setUsage(usageData);
+        } else {
+          // Default usage for free plan
+          setUsage({
+            totalEnhancements: 3,
+            usedEnhancements: 0,
+            remainingEnhancements: 3,
+            resetDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+          });
+        }
       } catch (err: any) {
         setError(err.message || 'Failed to load subscription data');
       } finally {
@@ -85,26 +102,40 @@ export default function Subscription() {
       }
     };
 
-    fetchData();
-  }, [router]);
+    if (!authLoading) {
+      fetchData();
+    }
+  }, [router, user, isAuthenticated, authLoading]);
 
   const handleManageSubscription = async () => {
     setIsRedirecting(true);
     try {
-      // TODO: Replace with actual Stripe customer portal URL from backend
-      // const response = await fetch('/api/stripe/create-portal-session', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     'Authorization': `Bearer ${session.data.session.access_token}`
-      //   },
-      // });
-      // const { url } = await response.json();
-      // window.location.href = url;
+      if (!isSupabaseConfigured()) {
+        setError('Supabase is not configured. Please set up Supabase to enable subscription management.');
+        setIsRedirecting(false);
+        return;
+      }
 
-      // Mock redirect (replace with actual Stripe portal URL)
-      const stripePortalUrl = process.env.NEXT_PUBLIC_STRIPE_PORTAL_URL || 'https://billing.stripe.com/p/login-test';
-      window.location.href = stripePortalUrl;
+      const { url, error } = await createStripePortalSession();
+
+      if (error) {
+        setError(error.message || 'Failed to create Stripe portal session');
+        setIsRedirecting(false);
+        return;
+      }
+
+      if (url) {
+        window.location.href = url;
+      } else {
+        // Fallback to environment variable if helper not implemented
+        const stripePortalUrl = process.env.NEXT_PUBLIC_STRIPE_PORTAL_URL;
+        if (stripePortalUrl) {
+          window.location.href = stripePortalUrl;
+        } else {
+          setError('Stripe portal is not configured. Please contact support.');
+          setIsRedirecting(false);
+        }
+      }
     } catch (err: any) {
       setError(err.message || 'Failed to redirect to Stripe');
       setIsRedirecting(false);
@@ -140,8 +171,7 @@ export default function Subscription() {
 
   if (loading) {
     return (
-      <main className="min-h-screen">
-        <Header />
+      <MainLayout>
         <section className="pt-[103px] py-24 bg-white">
           <div className="container mx-auto px-12">
             <div className="max-w-4xl mx-auto text-center">
@@ -149,14 +179,12 @@ export default function Subscription() {
             </div>
           </div>
         </section>
-        <Footer />
-      </main>
+      </MainLayout>
     );
   }
 
   return (
-    <main className="min-h-screen">
-      <Header />
+    <MainLayout>
       
       <section className="pt-[103px] py-24 bg-white">
         <div className="container mx-auto px-12">
@@ -321,9 +349,7 @@ export default function Subscription() {
           </div>
         </div>
       </section>
-      
-      <Footer />
-    </main>
+    </MainLayout>
   );
 }
 
