@@ -57,21 +57,17 @@ export default function Login() {
         return;
       }
 
-      const { user, session, error } = await signInWithPassword(
+      const { error } = await signInWithPassword(
         formState.email,
         formState.password
       );
 
       if (error) {
-        setErrors({ general: error.message || 'Invalid email or password. Please try again.' });
-        return;
+        throw error;
       }
 
-      if (user && session) {
-        // Successful login - redirect to account page
-        router.push('/account');
-        router.refresh();
-      }
+      // Successful login - redirect to account page
+      router.push('/account');
     } catch (error: any) {
       setErrors({ general: error.message || 'An error occurred during login. Please try again.' });
     } finally {
@@ -82,7 +78,7 @@ export default function Login() {
   return (
     <main className="min-h-screen">
       <Header />
-      
+
       {/* Login Form Section */}
       <section className="pt-[103px] py-24 bg-white">
         <div className="container mx-auto px-12">
@@ -92,43 +88,43 @@ export default function Login() {
               <p className="text-[16px] text-gray-600 mb-8 text-center">
                 Sign in to access your OptiPrompt account
               </p>
-              
+
               <form onSubmit={handleSubmit}>
                 {errors.general && (
                   <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
                     <p className="text-red-600 text-sm">{errors.general}</p>
                   </div>
                 )}
-                
-                <InputField 
-                  label="Email Address" 
-                  name="email" 
-                  type="email" 
-                  value={formState.email} 
-                  onChange={handleChange} 
-                  placeholder="you@example.com" 
+
+                <InputField
+                  label="Email Address"
+                  name="email"
+                  type="email"
+                  value={formState.email}
+                  onChange={handleChange}
+                  placeholder="you@example.com"
                   error={errors.email}
                   className="mb-6"
-                  required 
+                  required
                 />
-                
-                <InputField 
-                  label="Password" 
-                  name="password" 
-                  type="password" 
-                  value={formState.password} 
-                  onChange={handleChange} 
-                  placeholder="Enter your password" 
+
+                <InputField
+                  label="Password"
+                  name="password"
+                  type="password"
+                  value={formState.password}
+                  onChange={handleChange}
+                  placeholder="Enter your password"
                   error={errors.password}
                   className="mb-6"
-                  required 
+                  required
                 />
-                
+
                 <div className="flex items-center justify-between mb-8">
                   <label className="flex items-center cursor-pointer">
-                    <input 
-                      type="checkbox" 
-                      className="w-4 h-4 text-[#2563EB] border-gray-300 rounded focus:ring-[#2563EB] focus:ring-2 cursor-pointer" 
+                    <input
+                      type="checkbox"
+                      className="w-4 h-4 text-[#2563EB] border-gray-300 rounded focus:ring-[#2563EB] focus:ring-2 cursor-pointer"
                     />
                     <span className="text-sm text-gray-600 ml-2">Remember me</span>
                   </label>
@@ -136,16 +132,16 @@ export default function Login() {
                     Forgot password?
                   </Link>
                 </div>
-                
-                <Button 
-                  type="submit" 
-                  variant="primary" 
+
+                <Button
+                  type="submit"
+                  variant="primary"
                   className="rounded-[10px] bg-[#2563EB] hover:bg-[#1E40AF] transition-colors text-white px-8 py-3 h-[50px] text-[16px] font-medium w-full mb-6"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? 'Signing in...' : 'Sign In'}
                 </Button>
-                
+
                 <div className="text-center">
                   <p className="text-sm text-gray-600">
                     Don't have an account?{' '}
@@ -159,7 +155,7 @@ export default function Login() {
           </div>
         </div>
       </section>
-      
+
       <Footer />
     </main>
   );
