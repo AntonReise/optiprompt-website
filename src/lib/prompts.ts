@@ -33,8 +33,7 @@ export async function getSavedPrompts(): Promise<SavedPrompt[]> {
     if (!user) return [];
 
     const client = getSupabaseClient();
-    // TODO: Uncomment and adjust table/column names once schema is created
-    /*
+
     const { data, error } = await client
       .from('saved_prompts')
       .select('*')
@@ -47,8 +46,6 @@ export async function getSavedPrompts(): Promise<SavedPrompt[]> {
     }
 
     return data || [];
-    */
-    return [];
   } catch (error) {
     console.error('Error fetching saved prompts:', error);
     return [];
@@ -73,8 +70,7 @@ export async function savePrompt(
     }
 
     const client = getSupabaseClient();
-    // TODO: Uncomment and adjust table/column names once schema is created
-    /*
+
     const { data, error } = await client
       .from('saved_prompts')
       .insert({
@@ -90,8 +86,6 @@ export async function savePrompt(
     }
 
     return { data, error: null };
-    */
-    return { data: null, error: new Error('Not implemented yet') };
   } catch (error: any) {
     return { data: null, error: new Error(error.message || 'An error occurred') };
   }
@@ -115,8 +109,7 @@ export async function updateSavedPrompt(
     }
 
     const client = getSupabaseClient();
-    // TODO: Uncomment and adjust table/column names once schema is created
-    /*
+
     const { data, error } = await client
       .from('saved_prompts')
       .update({
@@ -133,8 +126,6 @@ export async function updateSavedPrompt(
     }
 
     return { data, error: null };
-    */
-    return { data: null, error: new Error('Not implemented yet') };
   } catch (error: any) {
     return { data: null, error: new Error(error.message || 'An error occurred') };
   }
@@ -155,8 +146,7 @@ export async function deleteSavedPrompt(id: string): Promise<{ error: Error | nu
     }
 
     const client = getSupabaseClient();
-    // TODO: Uncomment and adjust table/column names once schema is created
-    /*
+
     const { error } = await client
       .from('saved_prompts')
       .delete()
@@ -168,8 +158,6 @@ export async function deleteSavedPrompt(id: string): Promise<{ error: Error | nu
     }
 
     return { error: null };
-    */
-    return { error: new Error('Not implemented yet') };
   } catch (error: any) {
     return { error: new Error(error.message || 'An error occurred') };
   }

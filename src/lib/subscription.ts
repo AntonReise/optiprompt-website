@@ -41,8 +41,7 @@ export async function getUserSubscription(): Promise<SubscriptionData | null> {
     if (!user) return null;
 
     const client = getSupabaseClient();
-    // TODO: Uncomment and adjust table/column names once schema is created
-    /*
+
     const { data, error } = await client
       .from('subscriptions')
       .select('*')
@@ -62,8 +61,6 @@ export async function getUserSubscription(): Promise<SubscriptionData | null> {
       stripeCustomerId: data.stripe_customer_id,
       stripeSubscriptionId: data.stripe_subscription_id,
     };
-    */
-    return null;
   } catch (error) {
     console.error('Error fetching subscription:', error);
     return null;
@@ -83,8 +80,7 @@ export async function getUserUsage(): Promise<UsageData | null> {
     if (!user) return null;
 
     const client = getSupabaseClient();
-    // TODO: Uncomment and adjust table/column names once schema is created
-    /*
+
     const { data, error } = await client
       .from('usage')
       .select('*')
@@ -102,8 +98,6 @@ export async function getUserUsage(): Promise<UsageData | null> {
       remainingEnhancements: data.total_enhancements === -1 ? null : data.total_enhancements - data.used_enhancements,
       resetDate: data.reset_date,
     };
-    */
-    return null;
   } catch (error) {
     console.error('Error fetching usage:', error);
     return null;
@@ -124,9 +118,7 @@ export async function createStripePortalSession(): Promise<{ url: string | null;
       return { url: null, error: new Error('User not authenticated') };
     }
 
-    // TODO: Implement API route to create Stripe portal session
-    // This should call your backend API which creates a Stripe portal session
-    /*
+
     const response = await fetch('/api/stripe/create-portal-session', {
       method: 'POST',
       headers: {
@@ -141,8 +133,6 @@ export async function createStripePortalSession(): Promise<{ url: string | null;
 
     const { url } = await response.json();
     return { url, error: null };
-    */
-    return { url: null, error: new Error('Not implemented yet') };
   } catch (error: any) {
     return { url: null, error: new Error(error.message || 'An error occurred') };
   }

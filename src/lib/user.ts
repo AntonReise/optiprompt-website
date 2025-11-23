@@ -34,8 +34,7 @@ export async function getUserProfile(): Promise<UserProfile | null> {
     if (!user) return null;
 
     const client = getSupabaseClient();
-    // TODO: Uncomment and adjust table/column names once schema is created
-    /*
+
     const { data, error } = await client
       .from('profiles')
       .select('*')
@@ -48,8 +47,6 @@ export async function getUserProfile(): Promise<UserProfile | null> {
     }
 
     return data;
-    */
-    return null;
   } catch (error) {
     console.error('Error fetching user profile:', error);
     return null;
@@ -73,8 +70,7 @@ export async function updateUserProfile(
     }
 
     const client = getSupabaseClient();
-    // TODO: Uncomment and adjust table/column names once schema is created
-    /*
+
     const { data, error } = await client
       .from('profiles')
       .update({
@@ -90,8 +86,6 @@ export async function updateUserProfile(
     }
 
     return { data, error: null };
-    */
-    return { data: null, error: new Error('Not implemented yet') };
   } catch (error: any) {
     return { data: null, error: new Error(error.message || 'An error occurred') };
   }
