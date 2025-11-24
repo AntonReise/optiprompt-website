@@ -93,11 +93,11 @@ export default function Signup() {
   };
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen flex flex-col">
       <Header />
-      
+
       {/* Signup Form Section */}
-      <section className="pt-[103px] py-24 bg-white">
+      <section className="pt-[160px] py-24 bg-white flex-1">
         <div className="container mx-auto px-12">
           <div className="max-w-md mx-auto">
             <div className="bg-white rounded-2xl shadow-lg p-10">
@@ -105,61 +105,61 @@ export default function Signup() {
               <p className="text-[16px] text-gray-600 mb-8 text-center">
                 Create your account to get started with OptiPrompt
               </p>
-              
+
               <form onSubmit={handleSubmit}>
                 {errors.general && (
                   <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
                     <p className="text-red-600 text-sm">{errors.general}</p>
                   </div>
                 )}
-                
-                <InputField 
-                  label="Email Address" 
-                  name="email" 
-                  type="email" 
-                  value={formState.email} 
-                  onChange={handleChange} 
-                  placeholder="you@example.com" 
+
+                <InputField
+                  label="Email Address"
+                  name="email"
+                  type="email"
+                  value={formState.email}
+                  onChange={handleChange}
+                  placeholder="you@example.com"
                   helpText="We'll use this to send you account updates"
                   error={errors.email}
                   className="mb-6"
-                  required 
+                  required
                 />
-                
-                <InputField 
-                  label="Password" 
-                  name="password" 
-                  type="password" 
-                  value={formState.password} 
-                  onChange={handleChange} 
-                  placeholder="Create a strong password" 
+
+                <InputField
+                  label="Password"
+                  name="password"
+                  type="password"
+                  value={formState.password}
+                  onChange={handleChange}
+                  placeholder="Create a strong password"
                   helpText="Must be at least 8 characters long"
                   error={errors.password}
                   className="mb-6"
-                  required 
+                  required
                 />
-                
-                <InputField 
-                  label="Confirm Password" 
-                  name="confirmPassword" 
-                  type="password" 
-                  value={formState.confirmPassword} 
-                  onChange={handleChange} 
-                  placeholder="Re-enter your password" 
+
+                <InputField
+                  label="Confirm Password"
+                  name="confirmPassword"
+                  type="password"
+                  value={formState.confirmPassword}
+                  onChange={handleChange}
+                  placeholder="Re-enter your password"
                   error={errors.confirmPassword}
                   className="mb-8"
-                  required 
+                  required
                 />
-                
-                <Button 
-                  type="submit" 
-                  variant="primary" 
+
+                <Button
+                  type="submit"
+                  variant="primary"
                   className="rounded-[10px] bg-[#2563EB] hover:bg-[#1E40AF] transition-colors text-white px-8 py-3 h-[50px] text-[16px] font-medium w-full mb-6"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? 'Creating account...' : 'Sign Up'}
                 </Button>
-                
+
                 <div className="text-center">
                   <p className="text-sm text-gray-600">
                     Already have an account?{' '}
@@ -173,7 +173,7 @@ export default function Signup() {
           </div>
         </div>
       </section>
-      
+
       <Footer />
     </main>
   );

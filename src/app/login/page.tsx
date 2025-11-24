@@ -76,11 +76,11 @@ export default function Login() {
   };
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen flex flex-col">
       <Header />
 
       {/* Login Form Section */}
-      <section className="pt-[103px] py-24 bg-white">
+      <section className="pt-[160px] py-24 bg-white flex-1">
         <div className="container mx-auto px-12">
           <div className="max-w-md mx-auto">
             <div className="bg-white rounded-2xl shadow-lg p-10">
@@ -120,14 +120,7 @@ export default function Login() {
                   required
                 />
 
-                <div className="flex items-center justify-between mb-8">
-                  <label className="flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      className="w-4 h-4 text-[#2563EB] border-gray-300 rounded focus:ring-[#2563EB] focus:ring-2 cursor-pointer"
-                    />
-                    <span className="text-sm text-gray-600 ml-2">Remember me</span>
-                  </label>
+                <div className="flex items-center justify-end mb-8">
                   <Link href="/forgot-password" className="text-sm text-[#2563EB] hover:underline">
                     Forgot password?
                   </Link>

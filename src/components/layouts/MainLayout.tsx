@@ -26,7 +26,7 @@ export default function MainLayout({ children, showSidebar = true }: MainLayoutP
             <Sidebar navItems={navItems} />
           </div>
         )}
-        <main className={`flex-1 ${showSidebar ? 'lg:ml-64' : ''}`}>
+        <main className="flex-1">
           {children}
         </main>
       </div>

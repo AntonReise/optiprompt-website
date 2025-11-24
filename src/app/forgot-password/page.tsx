@@ -64,11 +64,11 @@ export default function ForgotPassword() {
   };
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen flex flex-col">
       <Header />
-      
+
       {/* Forgot Password Form Section */}
-      <section className="pt-[103px] py-24 bg-white">
+      <section className="pt-[160px] py-24 bg-white flex-1">
         <div className="container mx-auto px-12">
           <div className="max-w-md mx-auto">
             <div className="bg-white rounded-2xl shadow-lg p-10">
@@ -76,7 +76,7 @@ export default function ForgotPassword() {
               <p className="text-[16px] text-gray-600 mb-8 text-center">
                 Enter your email address and we'll send you instructions to reset your password.
               </p>
-              
+
               {isSuccess ? (
                 <div className="text-center">
                   <div className="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
@@ -87,8 +87,8 @@ export default function ForgotPassword() {
                     </p>
                     <p className="text-sm text-gray-600">
                       Didn't receive the email? Check your spam folder or{' '}
-                      <button 
-                        onClick={() => setIsSuccess(false)} 
+                      <button
+                        onClick={() => setIsSuccess(false)}
                         className="text-[#2563EB] hover:underline"
                       >
                         try again
@@ -96,8 +96,8 @@ export default function ForgotPassword() {
                     </p>
                   </div>
                   <Link href="/login">
-                    <Button 
-                      variant="primary" 
+                    <Button
+                      variant="primary"
                       className="rounded-[10px] bg-[#2563EB] hover:bg-[#1E40AF] transition-colors text-white px-8 py-3 h-[50px] text-[16px] font-medium w-full"
                     >
                       Back to Login
@@ -111,33 +111,33 @@ export default function ForgotPassword() {
                       <p className="text-red-600 text-sm">{error}</p>
                     </div>
                   )}
-                  
+
                   <p className="text-sm text-gray-600 mb-6 text-center">
                     Enter the email address associated with your account and we'll send you a link to reset your password.
                   </p>
-                  
-                  <InputField 
-                    label="Email Address" 
-                    name="email" 
-                    type="email" 
-                    value={email} 
-                    onChange={handleChange} 
-                    placeholder="you@example.com" 
+
+                  <InputField
+                    label="Email Address"
+                    name="email"
+                    type="email"
+                    value={email}
+                    onChange={handleChange}
+                    placeholder="you@example.com"
                     helpText="Enter the email address associated with your account"
                     error={error && !error.includes('configured') ? error : undefined}
                     className="mb-8"
-                    required 
+                    required
                   />
-                  
-                  <Button 
-                    type="submit" 
-                    variant="primary" 
+
+                  <Button
+                    type="submit"
+                    variant="primary"
                     className="rounded-[10px] bg-[#2563EB] hover:bg-[#1E40AF] transition-colors text-white px-8 py-3 h-[50px] text-[16px] font-medium w-full mb-6"
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? 'Sending...' : 'Send Reset Instructions'}
                   </Button>
-                  
+
                   <div className="text-center">
                     <Link href="/login" className="text-sm text-[#2563EB] hover:underline">
                       ← Back to login
@@ -149,7 +149,7 @@ export default function ForgotPassword() {
           </div>
         </div>
       </section>
-      
+
       <Footer />
     </main>
   );
