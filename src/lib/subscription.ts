@@ -10,7 +10,7 @@
 
 import { supabase, getSupabaseClient } from './supabaseClient';
 import { isSupabaseConfigured } from './supabase';
-import { getCurrentUser } from './auth';
+import { getCurrentUser, getSession } from './auth';
 
 export interface SubscriptionData {
   plan: 'free' | 'pro' | 'business';
@@ -105,6 +105,40 @@ export async function getUserUsage(): Promise<UsageData | null> {
 }
 
 /**
+ * Create Stripe Checkout Session
+ */
+export async function createCheckoutSession(): Promise<{ url: string | null; error: Error | null }> {
+  if (!isSupabaseConfigured()) {
+    return { url: null, error: new Error('Supabase is not configured') };
+  }
+
+  try {
+    const session = await getSession();
+    if (!session?.access_token) {
+      return { url: null, error: new Error('User not authenticated') };
+    }
+
+    const response = await fetch('/api/create-checkout-session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session.access_token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      return { url: null, error: new Error(errorData.error || 'Failed to create checkout session') };
+    }
+
+    const { url } = await response.json();
+    return { url, error: null };
+  } catch (error: any) {
+    return { url: null, error: new Error(error.message || 'An error occurred') };
+  }
+}
+
+/**
  * Create Stripe customer portal session
  */
 export async function createStripePortalSession(): Promise<{ url: string | null; error: Error | null }> {
@@ -113,22 +147,22 @@ export async function createStripePortalSession(): Promise<{ url: string | null;
   }
 
   try {
-    const user = await getCurrentUser();
-    if (!user) {
+    const session = await getSession();
+    if (!session?.access_token) {
       return { url: null, error: new Error('User not authenticated') };
     }
-
 
     const response = await fetch('/api/stripe/create-portal-session', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session.access_token}`,
       },
-      body: JSON.stringify({ userId: user.id }),
     });
 
     if (!response.ok) {
-      return { url: null, error: new Error('Failed to create portal session') };
+      const errorData = await response.json().catch(() => ({}));
+      return { url: null, error: new Error(errorData.error || 'Failed to create portal session') };
     }
 
     const { url } = await response.json();

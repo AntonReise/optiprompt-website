@@ -9,7 +9,7 @@ import Tag from '@/components/ui/Tag';
 import Image from 'next/image';
 import { isSupabaseConfigured } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
-import { getUserSubscription, getUserUsage, createStripePortalSession } from '@/lib/subscription';
+import { getUserSubscription, getUserUsage, createStripePortalSession, createCheckoutSession } from '@/lib/subscription';
 
 interface SubscriptionData {
   plan: 'free' | 'pro' | 'business';
@@ -106,6 +106,31 @@ export default function Subscription() {
       fetchData();
     }
   }, [router, user, isAuthenticated, authLoading]);
+
+  const handleUpgradeToPro = async () => {
+    setIsRedirecting(true);
+    try {
+      if (!isSupabaseConfigured()) {
+        setError('Supabase is not configured. Please set up Supabase to enable subscription management.');
+        setIsRedirecting(false);
+        return;
+      }
+
+      const { url, error } = await createCheckoutSession();
+
+      if (error || !url) {
+        setError(error?.message || 'Failed to create checkout session. Please try again.');
+        setIsRedirecting(false);
+        return;
+      }
+
+      // Redirect to Stripe Checkout
+      window.location.href = url;
+    } catch (err: any) {
+      setError(err.message || 'An error occurred. Please try again.');
+      setIsRedirecting(false);
+    }
+  };
 
   const handleManageSubscription = async () => {
     setIsRedirecting(true);
@@ -252,14 +277,29 @@ export default function Subscription() {
                 </div>
               )}
 
-              <Button
-                onClick={handleManageSubscription}
-                variant="primary"
-                className="rounded-[10px] bg-[#2563EB] hover:bg-[#1E40AF] transition-colors text-white px-8 py-3 h-[50px] text-[16px] font-medium"
-                disabled={isRedirecting}
-              >
-                {isRedirecting ? 'Redirecting...' : 'Manage Subscription'}
-              </Button>
+              {/* Show upgrade button if user is on free plan or has no active subscription */}
+              {(subscription?.plan === 'free' || subscription?.status !== 'active') && (
+                <Button
+                  onClick={handleUpgradeToPro}
+                  variant="primary"
+                  className="rounded-[10px] bg-[#2563EB] hover:bg-[#1E40AF] transition-colors text-white px-8 py-3 h-[50px] text-[16px] font-medium"
+                  disabled={isRedirecting}
+                >
+                  {isRedirecting ? 'Redirecting...' : 'Upgrade to Pro'}
+                </Button>
+              )}
+
+              {/* Show manage subscription button if user has active subscription */}
+              {subscription?.plan !== 'free' && subscription?.status === 'active' && (
+                <Button
+                  onClick={handleManageSubscription}
+                  variant="primary"
+                  className="rounded-[10px] bg-[#2563EB] hover:bg-[#1E40AF] transition-colors text-white px-8 py-3 h-[50px] text-[16px] font-medium"
+                  disabled={isRedirecting}
+                >
+                  {isRedirecting ? 'Redirecting...' : 'Manage Subscription'}
+                </Button>
+              )}
             </div>
 
             {/* Usage Card */}
