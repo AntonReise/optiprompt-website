@@ -27,7 +27,7 @@ if (!stripeSecretKey) {
 }
 
 const stripe = new Stripe(stripeSecretKey, {
-  apiVersion: '2024-11-20.acacia',
+  apiVersion: '2025-11-17.clover',
 });
 
 // Initialize Supabase with service role key for admin operations
@@ -45,7 +45,7 @@ export const runtime = 'nodejs';
 
 export async function POST(request: NextRequest) {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-  
+
   if (!webhookSecret) {
     console.error('STRIPE_WEBHOOK_SECRET is not set');
     return NextResponse.json(
@@ -130,7 +130,7 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
   // Get the subscription details from Stripe
   const subscription = await stripe.subscriptions.retrieve(subscriptionId);
   const priceId = subscription.items.data[0]?.price.id;
-  
+
   // Determine plan based on price ID (you can extend this logic)
   let plan: 'free' | 'pro' | 'business' = 'pro';
   if (process.env.STRIPE_PRICE_ID_PRO && priceId === process.env.STRIPE_PRICE_ID_PRO) {
@@ -146,8 +146,8 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
       stripe_subscription_id: subscriptionId,
       plan: plan,
       status: subscription.status === 'active' ? 'active' : subscription.status === 'trialing' ? 'trialing' : 'active',
-      current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
-      cancel_at_period_end: subscription.cancel_at_period_end,
+      current_period_end: new Date(subscription.items.data[0].current_period_end * 1000).toISOString(),
+      cancel_at_period_end: subscription.cancel_at_period_end ?? false,
     }, {
       onConflict: 'user_id',
     });
@@ -164,7 +164,7 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
 async function handleSubscriptionUpdate(subscription: Stripe.Subscription) {
   const customerId = subscription.customer as string;
   const subscriptionId = subscription.id;
-  
+
   // Find user by customer ID
   const { data: existingSub, error: fetchError } = await supabase
     .from('subscriptions')
@@ -177,7 +177,7 @@ async function handleSubscriptionUpdate(subscription: Stripe.Subscription) {
     const customer = await stripe.customers.retrieve(customerId);
     if (typeof customer !== 'string' && !customer.deleted && customer.metadata?.supabase_user_id) {
       const userId = customer.metadata.supabase_user_id;
-      
+
       const priceId = subscription.items.data[0]?.price.id;
       let plan: 'free' | 'pro' | 'business' = 'pro';
       if (process.env.STRIPE_PRICE_ID_PRO && priceId === process.env.STRIPE_PRICE_ID_PRO) {
@@ -192,8 +192,8 @@ async function handleSubscriptionUpdate(subscription: Stripe.Subscription) {
           stripe_subscription_id: subscriptionId,
           plan: plan,
           status: subscription.status === 'active' ? 'active' : subscription.status === 'trialing' ? 'trialing' : subscription.status as any,
-          current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
-          cancel_at_period_end: subscription.cancel_at_period_end,
+          current_period_end: new Date(subscription.items.data[0].current_period_end * 1000).toISOString(),
+          cancel_at_period_end: subscription.cancel_at_period_end ?? false,
         }, {
           onConflict: 'user_id',
         });
@@ -216,8 +216,8 @@ async function handleSubscriptionUpdate(subscription: Stripe.Subscription) {
       stripe_subscription_id: subscriptionId,
       plan: plan,
       status: subscription.status === 'active' ? 'active' : subscription.status === 'trialing' ? 'trialing' : subscription.status as any,
-      current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
-      cancel_at_period_end: subscription.cancel_at_period_end,
+      current_period_end: new Date(subscription.items.data[0].current_period_end * 1000).toISOString(),
+      cancel_at_period_end: subscription.cancel_at_period_end ?? false,
     })
     .eq('user_id', existingSub.user_id);
 
@@ -232,7 +232,7 @@ async function handleSubscriptionUpdate(subscription: Stripe.Subscription) {
  */
 async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
   const customerId = subscription.customer as string;
-  
+
   // Find user by customer ID
   const { data: existingSub } = await supabase
     .from('subscriptions')

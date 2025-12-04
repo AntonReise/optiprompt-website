@@ -19,7 +19,7 @@ if (!stripeSecretKey) {
 }
 
 const stripe = new Stripe(stripeSecretKey, {
-  apiVersion: '2024-11-20.acacia',
+  apiVersion: '2025-11-17.clover',
 });
 
 // Initialize Supabase
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
 
     // Verify the user's session
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-    
+
     if (authError || !user) {
       return NextResponse.json(
         { error: 'Unauthorized. Invalid or expired session.' },
