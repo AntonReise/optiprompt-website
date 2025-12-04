@@ -9,7 +9,6 @@ import InputField from '@/components/ui/InputField';
 import Image from 'next/image';
 import { isSupabaseConfigured } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
-import { updatePassword } from '@/lib/auth';
 import { getUserProfile, updateUserProfile } from '@/lib/user';
 
 interface UserProfile {
@@ -19,11 +18,11 @@ interface UserProfile {
   phone?: string;
 }
 
-export default function Account() {
+const Account: React.FC = () => {
   const router = useRouter();
   const { user, isAuthenticated } = useAuth();
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'profile' | 'password' | 'settings'>('profile');
+  const [activeTab, setActiveTab] = useState<'profile' | 'settings'>('profile');
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState<string>('');
 
@@ -35,19 +34,6 @@ export default function Account() {
     phone: '',
   });
 
-  // Password form state
-  const [passwordData, setPasswordData] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: '',
-  });
-  const [passwordErrors, setPasswordErrors] = useState<{
-    currentPassword?: string;
-    newPassword?: string;
-    confirmPassword?: string;
-    general?: string;
-  }>({});
-  const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
   const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
 
   useEffect(() => {
@@ -109,15 +95,6 @@ export default function Account() {
     if (success) setSuccess('');
   };
 
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setPasswordData(prev => ({ ...prev, [name]: value }));
-    // Clear errors when user starts typing
-    if (passwordErrors[name as keyof typeof passwordErrors]) {
-      setPasswordErrors(prev => ({ ...prev, [name]: undefined }));
-    }
-  };
-
   const handleProfileSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsUpdatingProfile(true);
@@ -126,7 +103,9 @@ export default function Account() {
 
     try {
       if (!isSupabaseConfigured()) {
-        setError('Supabase is not configured. Please set up Supabase to enable profile updates.');
+        setError(
+          'Supabase is not configured. Please set up Supabase to enable profile updates.',
+        );
         setIsUpdatingProfile(false);
         return;
       }
@@ -157,66 +136,6 @@ export default function Account() {
     }
   };
 
-  const handlePasswordSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsUpdatingPassword(true);
-    setPasswordErrors({});
-
-    // Validation
-    const newErrors: { currentPassword?: string; newPassword?: string; confirmPassword?: string } = {};
-    if (!passwordData.currentPassword) {
-      newErrors.currentPassword = 'Current password is required';
-    }
-    if (!passwordData.newPassword) {
-      newErrors.newPassword = 'New password is required';
-    } else if (passwordData.newPassword.length < 8) {
-      newErrors.newPassword = 'Password must be at least 8 characters';
-    }
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
-    }
-    if (passwordData.currentPassword === passwordData.newPassword) {
-      newErrors.newPassword = 'New password must be different from current password';
-    }
-
-    if (Object.keys(newErrors).length > 0) {
-      setPasswordErrors(newErrors);
-      setIsUpdatingPassword(false);
-      return;
-    }
-
-    try {
-      if (!isSupabaseConfigured()) {
-        setPasswordErrors({ general: 'Supabase is not configured. Please set up Supabase to enable password changes.' });
-        setIsUpdatingPassword(false);
-        return;
-      }
-
-      // Note: Supabase doesn't require current password to update password
-      // The user must be authenticated. If you need to verify current password,
-      // you'll need to implement a custom API endpoint.
-      const { error } = await updatePassword(passwordData.newPassword);
-
-      if (error) {
-        setPasswordErrors({ general: error.message || 'Failed to change password' });
-        return;
-      }
-
-      setPasswordErrors({});
-      setPasswordData({
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: '',
-      });
-      setSuccess('Password changed successfully!');
-      setActiveTab('profile');
-    } catch (err: any) {
-      setPasswordErrors({ general: err.message || 'Failed to change password' });
-    } finally {
-      setIsUpdatingPassword(false);
-    }
-  };
-
   if (loading) {
     return (
       <MainLayout>
@@ -233,7 +152,6 @@ export default function Account() {
 
   return (
     <MainLayout>
-      
       <section className="pt-[103px] py-24 bg-white">
         <div className="container mx-auto px-12">
           <div className="max-w-4xl mx-auto">
@@ -242,13 +160,23 @@ export default function Account() {
               <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6 rounded">
                 <div className="flex items-start">
                   <div className="flex-shrink-0">
-                    <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                    <svg
+                      className="h-5 w-5 text-yellow-400"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                        clipRule="evenodd"
+                      />
                     </svg>
                   </div>
                   <div className="ml-3">
                     <p className="text-sm text-yellow-800">
-                      <strong>Development Preview:</strong> You're viewing this page with mock data. Authentication is not configured yet. This page will require login once Supabase is set up.
+                      <strong>Development Preview:</strong> You're viewing this page with
+                      mock data. Authentication is not configured yet. This page will
+                      require login once Supabase is set up.
                     </p>
                   </div>
                 </div>
@@ -270,14 +198,18 @@ export default function Account() {
                   <div className="bg-white rounded-xl p-4 hover:shadow-lg transition-shadow cursor-pointer">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="font-semibold text-black mb-1">Subscription & Usage</p>
-                        <p className="text-sm text-gray-600">View your plan and usage statistics</p>
+                        <p className="font-semibold text-black mb-1">
+                          Subscription & Usage
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          View your plan and usage statistics
+                        </p>
                       </div>
-                      <Image 
-                        src="/images/img_icons.svg" 
-                        alt="Arrow" 
-                        width={20} 
-                        height={20} 
+                      <Image
+                        src="/images/img_icons.svg"
+                        alt="Arrow"
+                        width={20}
+                        height={20}
                         className="ml-2"
                       />
                     </div>
@@ -288,13 +220,15 @@ export default function Account() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="font-semibold text-black mb-1">Contact Support</p>
-                        <p className="text-sm text-gray-600">Get help from our support team</p>
+                        <p className="text-sm text-gray-600">
+                          Get help from our support team
+                        </p>
                       </div>
-                      <Image 
-                        src="/images/img_icons.svg" 
-                        alt="Arrow" 
-                        width={20} 
-                        height={20} 
+                      <Image
+                        src="/images/img_icons.svg"
+                        alt="Arrow"
+                        width={20}
+                        height={20}
                         className="ml-2"
                       />
                     </div>
@@ -328,16 +262,6 @@ export default function Account() {
                 Personal Information
               </button>
               <button
-                onClick={() => setActiveTab('password')}
-                className={`px-6 py-3 font-medium text-[16px] border-b-2 transition-colors ${
-                  activeTab === 'password'
-                    ? 'border-[#2563EB] text-[#2563EB]'
-                    : 'border-transparent text-gray-600 hover:text-black'
-                }`}
-              >
-                Change Password
-              </button>
-              <button
                 onClick={() => setActiveTab('settings')}
                 className={`px-6 py-3 font-medium text-[16px] border-b-2 transition-colors ${
                   activeTab === 'settings'
@@ -352,8 +276,10 @@ export default function Account() {
             {/* Profile Tab */}
             {activeTab === 'profile' && (
               <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
-                <h2 className="text-[28px] font-bold text-black mb-6">Personal Information</h2>
-                
+                <h2 className="text-[28px] font-bold text-black mb-6">
+                  Personal Information
+                </h2>
+
                 <form onSubmit={handleProfileSubmit}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <InputField
@@ -376,7 +302,7 @@ export default function Account() {
                       required
                     />
                   </div>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                     <InputField
                       label="Company"
@@ -410,77 +336,18 @@ export default function Account() {
               </div>
             )}
 
-            {/* Password Tab */}
-            {activeTab === 'password' && (
-              <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
-                <h2 className="text-[28px] font-bold text-black mb-6">Change Password</h2>
-                
-                <form onSubmit={handlePasswordSubmit}>
-                  {passwordErrors.general && (
-                    <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
-                      <p className="text-red-600 text-sm">{passwordErrors.general}</p>
-                    </div>
-                  )}
-
-                  <InputField
-                    label="Current Password"
-                    name="currentPassword"
-                    type="password"
-                    value={passwordData.currentPassword}
-                    onChange={handlePasswordChange}
-                    placeholder="Enter your current password"
-                    error={passwordErrors.currentPassword}
-                    className="mb-6"
-                    required
-                  />
-
-                  <InputField
-                    label="New Password"
-                    name="newPassword"
-                    type="password"
-                    value={passwordData.newPassword}
-                    onChange={handlePasswordChange}
-                    placeholder="Create a strong password"
-                    helpText="Must be at least 8 characters long"
-                    error={passwordErrors.newPassword}
-                    className="mb-6"
-                    required
-                  />
-
-                  <InputField
-                    label="Confirm New Password"
-                    name="confirmPassword"
-                    type="password"
-                    value={passwordData.confirmPassword}
-                    onChange={handlePasswordChange}
-                    placeholder="Re-enter your new password"
-                    error={passwordErrors.confirmPassword}
-                    className="mb-8"
-                    required
-                  />
-
-                  <Button
-                    type="submit"
-                    variant="primary"
-                    className="rounded-[10px] bg-[#2563EB] hover:bg-[#1E40AF] transition-colors text-white px-8 py-3 h-[50px] text-[16px] font-medium"
-                    disabled={isUpdatingPassword}
-                  >
-                    {isUpdatingPassword ? 'Updating Password...' : 'Change Password'}
-                  </Button>
-                </form>
-              </div>
-            )}
-
             {/* Settings Tab */}
             {activeTab === 'settings' && (
               <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
                 <h2 className="text-[28px] font-bold text-black mb-6">Account Settings</h2>
-                
+
                 <div className="space-y-6">
                   <div className="flex items-center justify-between py-4 border-b border-gray-200">
                     <div>
                       <p className="font-semibold text-black mb-1">Email Notifications</p>
-                      <p className="text-sm text-gray-600">Receive email updates about your account</p>
+                      <p className="text-sm text-gray-600">
+                        Receive email updates about your account
+                      </p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input type="checkbox" className="sr-only peer" defaultChecked />
@@ -491,7 +358,9 @@ export default function Account() {
                   <div className="flex items-center justify-between py-4 border-b border-gray-200">
                     <div>
                       <p className="font-semibold text-black mb-1">Marketing Emails</p>
-                      <p className="text-sm text-gray-600">Receive updates about new features and offers</p>
+                      <p className="text-sm text-gray-600">
+                        Receive updates about new features and offers
+                      </p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input type="checkbox" className="sr-only peer" />
@@ -499,24 +368,14 @@ export default function Account() {
                     </label>
                   </div>
 
-                  <div className="flex items-center justify-between py-4 border-b border-gray-200">
-                    <div>
-                      <p className="font-semibold text-black mb-1">Two-Factor Authentication</p>
-                      <p className="text-sm text-gray-600">Add an extra layer of security to your account</p>
-                    </div>
-                    <Button
-                      variant="secondary"
-                      className="rounded-[10px] bg-white border border-gray-300 text-black hover:bg-gray-50 px-4 py-2 text-[14px] font-medium"
-                    >
-                      Enable
-                    </Button>
-                  </div>
-
                   <div className="pt-4">
                     <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-                      <p className="text-yellow-800 text-sm font-semibold mb-2">Danger Zone</p>
+                      <p className="text-yellow-800 text-sm font-semibold mb-2">
+                        Danger Zone
+                      </p>
                       <p className="text-yellow-700 text-sm mb-4">
-                        Once you delete your account, there is no going back. Please be certain.
+                        Once you delete your account, there is no going back. Please be
+                        certain.
                       </p>
                       <Button
                         variant="secondary"
@@ -546,5 +405,6 @@ export default function Account() {
       </section>
     </MainLayout>
   );
-}
+};
 
+export default Account;
