@@ -2,11 +2,10 @@
  * Authentication Helpers
  *
  * This file provides helper functions for GitHub OAuth authentication.
- * All functions handle the case where Supabase is not yet configured.
+ * Uses the proper SSR-compatible Supabase client.
  */
 
-import { supabase, getSupabaseClient } from './supabaseClient';
-import { isSupabaseConfigured } from './supabase';
+import { createClient } from '@/lib/supabase/client';
 import type { User, Session, AuthError as SupabaseAuthError } from '@supabase/supabase-js';
 
 // Type alias for auth errors
@@ -16,11 +15,8 @@ type AuthError = SupabaseAuthError | { message: string; status?: number };
  * Get the current user session
  */
 export const getSession = async (): Promise<Session | null> => {
-  if (!isSupabaseConfigured()) {
-    return null;
-  }
-
   try {
+    const supabase = createClient();
     const {
       data: { session },
       error,
@@ -48,15 +44,9 @@ export const getCurrentUser = async (): Promise<User | null> => {
  * Sign in with GitHub OAuth
  */
 export const signInWithGitHub = async (): Promise<{ error: AuthError | null }> => {
-  if (!isSupabaseConfigured()) {
-    return {
-      error: { message: 'Supabase is not configured', status: 500 } as AuthError,
-    };
-  }
-
   try {
-    const client = getSupabaseClient();
-    const { error } = await client.auth.signInWithOAuth({
+    const supabase = createClient();
+    const { error } = await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
@@ -75,15 +65,9 @@ export const signInWithGitHub = async (): Promise<{ error: AuthError | null }> =
  * Sign out the current user
  */
 export const signOut = async (): Promise<{ error: AuthError | null }> => {
-  if (!isSupabaseConfigured()) {
-    return {
-      error: { message: 'Supabase is not configured', status: 500 } as AuthError,
-    };
-  }
-
   try {
-    const client = getSupabaseClient();
-    const { error } = await client.auth.signOut();
+    const supabase = createClient();
+    const { error } = await supabase.auth.signOut();
     return { error };
   } catch (error: any) {
     return {
@@ -98,12 +82,8 @@ export const signOut = async (): Promise<{ error: AuthError | null }> => {
 export const onAuthStateChange = (
   callback: (event: string, session: Session | null) => void,
 ) => {
-  if (!isSupabaseConfigured()) {
-    return { data: { subscription: null }, unsubscribe: () => { } };
-  }
-
+  const supabase = createClient();
   return supabase.auth.onAuthStateChange((event, session) => {
     callback(event, session);
   });
 };
-

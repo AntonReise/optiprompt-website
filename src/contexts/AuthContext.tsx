@@ -2,7 +2,7 @@
 
 /**
  * Authentication Context
- * 
+ *
  * Provides authentication state and methods throughout the app.
  * Automatically syncs with Supabase auth state.
  */
@@ -10,7 +10,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getSession, getCurrentUser, signOut, onAuthStateChange } from '@/lib/auth';
-import { isSupabaseConfigured } from '@/lib/supabase';
 import type { User, Session } from '@supabase/supabase-js';
 
 interface AuthContextType {
@@ -32,11 +31,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Initial session check
     const initializeAuth = async () => {
-      if (!isSupabaseConfigured()) {
-        setLoading(false);
-        return;
-      }
-
       try {
         const currentSession = await getSession();
         const currentUser = await getCurrentUser();
@@ -52,22 +46,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     initializeAuth();
 
     // Listen to auth state changes
-    if (isSupabaseConfigured()) {
-      const { data: { subscription } } = onAuthStateChange(async (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
+    const {
+      data: { subscription },
+    } = onAuthStateChange(async (event, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
 
-        if (event === 'SIGNED_OUT') {
-          router.push('/');
-        } else if (event === 'SIGNED_IN') {
-          router.refresh();
-        }
-      });
+      if (event === 'SIGNED_OUT') {
+        router.push('/');
+      } else if (event === 'SIGNED_IN') {
+        router.refresh();
+      }
+    });
 
-      return () => {
-        subscription?.unsubscribe();
-      };
-    }
+    return () => {
+      subscription?.unsubscribe();
+    };
   }, [router]);
 
   const handleSignOut = async () => {
@@ -106,4 +100,3 @@ export function useAuth() {
   }
   return context;
 }
-

@@ -1,14 +1,13 @@
 /**
  * Saved Prompts Helpers
- * 
+ *
  * TODO: Implement these functions once the Supabase database schema is set up.
- * 
+ *
  * Expected database schema:
  * - saved_prompts table with columns: id, user_id, title, prompt_text, created_at, updated_at
  */
 
-import { supabase, getSupabaseClient } from './supabaseClient';
-import { isSupabaseConfigured } from './supabase';
+import { createClient } from '@/lib/supabase/client';
 import { getCurrentUser } from './auth';
 
 export interface SavedPrompt {
@@ -24,17 +23,13 @@ export interface SavedPrompt {
  * Get all saved prompts for the current user
  */
 export async function getSavedPrompts(): Promise<SavedPrompt[]> {
-  if (!isSupabaseConfigured()) {
-    return [];
-  }
-
   try {
     const user = await getCurrentUser();
     if (!user) return [];
 
-    const client = getSupabaseClient();
+    const supabase = createClient();
 
-    const { data, error } = await client
+    const { data, error } = await supabase
       .from('saved_prompts')
       .select('*')
       .eq('user_id', user.id)
@@ -57,21 +52,17 @@ export async function getSavedPrompts(): Promise<SavedPrompt[]> {
  */
 export async function savePrompt(
   title: string,
-  promptText: string
+  promptText: string,
 ): Promise<{ data: SavedPrompt | null; error: Error | null }> {
-  if (!isSupabaseConfigured()) {
-    return { data: null, error: new Error('Supabase is not configured') };
-  }
-
   try {
     const user = await getCurrentUser();
     if (!user) {
       return { data: null, error: new Error('User not authenticated') };
     }
 
-    const client = getSupabaseClient();
+    const supabase = createClient();
 
-    const { data, error } = await client
+    const { data, error } = await supabase
       .from('saved_prompts')
       .insert({
         user_id: user.id,
@@ -96,21 +87,17 @@ export async function savePrompt(
  */
 export async function updateSavedPrompt(
   id: string,
-  updates: { title?: string; prompt_text?: string }
+  updates: { title?: string; prompt_text?: string },
 ): Promise<{ data: SavedPrompt | null; error: Error | null }> {
-  if (!isSupabaseConfigured()) {
-    return { data: null, error: new Error('Supabase is not configured') };
-  }
-
   try {
     const user = await getCurrentUser();
     if (!user) {
       return { data: null, error: new Error('User not authenticated') };
     }
 
-    const client = getSupabaseClient();
+    const supabase = createClient();
 
-    const { data, error } = await client
+    const { data, error } = await supabase
       .from('saved_prompts')
       .update({
         ...updates,
@@ -135,19 +122,15 @@ export async function updateSavedPrompt(
  * Delete a saved prompt
  */
 export async function deleteSavedPrompt(id: string): Promise<{ error: Error | null }> {
-  if (!isSupabaseConfigured()) {
-    return { error: new Error('Supabase is not configured') };
-  }
-
   try {
     const user = await getCurrentUser();
     if (!user) {
       return { error: new Error('User not authenticated') };
     }
 
-    const client = getSupabaseClient();
+    const supabase = createClient();
 
-    const { error } = await client
+    const { error } = await supabase
       .from('saved_prompts')
       .delete()
       .eq('id', id)
@@ -162,4 +145,3 @@ export async function deleteSavedPrompt(id: string): Promise<{ error: Error | nu
     return { error: new Error(error.message || 'An error occurred') };
   }
 }
-

@@ -6,7 +6,6 @@ import { useSearchParams } from 'next/navigation';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 import Button from '@/components/ui/Button';
-import { isSupabaseConfigured } from '@/lib/supabase';
 import { signInWithGitHub } from '@/lib/auth';
 
 const GitHubIcon: React.FC<{ className?: string }> = ({ className }) => (
@@ -38,14 +37,6 @@ const LoginContent: React.FC = () => {
   const handleGitHubLogin = async () => {
     setIsSubmitting(true);
     setError(null);
-
-    if (!isSupabaseConfigured()) {
-      setError(
-        'Authentication is not yet configured. Please set up Supabase to enable login.',
-      );
-      setIsSubmitting(false);
-      return;
-    }
 
     const { error } = await signInWithGitHub();
 
