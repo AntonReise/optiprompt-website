@@ -87,11 +87,12 @@ export default function Subscription() {
         if (usageData) {
           setUsage(usageData);
         } else {
-          // Default usage for free plan
+          // Default usage based on plan (this shouldn't normally happen as getUserUsage handles this)
+          const dailyLimit = subscriptionData?.plan === 'pro' ? 100 : 3;
           setUsage({
-            totalEnhancements: 3,
+            totalEnhancements: dailyLimit,
             usedEnhancements: 0,
-            remainingEnhancements: 3,
+            remainingEnhancements: dailyLimit,
             resetDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
           });
         }
@@ -249,24 +250,30 @@ export default function Subscription() {
             <div className="bg-white rounded-2xl shadow-lg p-8 mb-8 border border-gray-100">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-[28px] font-bold text-black">Subscription Status</h2>
-                <span className={`px-4 py-2 rounded-full text-sm font-medium border ${getStatusBadgeColor(subscription?.status || 'active')}`}>
-                  {subscription?.status === 'active' ? 'Active' : 
-                   subscription?.status === 'trialing' ? 'Trialing' :
-                   subscription?.status === 'canceled' ? 'Canceled' : 'Past Due'}
-                </span>
+                {/* Only show status badge for paid plans */}
+                {subscription?.plan !== 'free' && (
+                  <span className={`px-4 py-2 rounded-full text-sm font-medium border ${getStatusBadgeColor(subscription?.status || 'active')}`}>
+                    {subscription?.status === 'active' ? 'Active' : 
+                     subscription?.status === 'trialing' ? 'Trialing' :
+                     subscription?.status === 'canceled' ? 'Canceled' : 'Past Due'}
+                  </span>
+                )}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div className="mb-6">
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Current Plan</p>
                   <p className="text-[24px] font-bold text-black">{getPlanDisplayName(subscription?.plan || 'free')}</p>
                 </div>
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Next Billing Date</p>
-                  <p className="text-[24px] font-bold text-black">
-                    {subscription?.currentPeriodEnd ? formatDate(subscription.currentPeriodEnd) : 'N/A'}
-                  </p>
-                </div>
+                {/* Only show billing date for paid plans */}
+                {subscription?.plan !== 'free' && (
+                  <div className="mt-6">
+                    <p className="text-sm text-gray-600 mb-1">Next Billing Date</p>
+                    <p className="text-[24px] font-bold text-black">
+                      {subscription?.currentPeriodEnd ? formatDate(subscription.currentPeriodEnd) : 'N/A'}
+                    </p>
+                  </div>
+                )}
               </div>
 
               {subscription?.cancelAtPeriodEnd && (
@@ -310,19 +317,19 @@ export default function Subscription() {
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="bg-gradient-to-br from-[#eaeefe] to-[#c1cefa] rounded-xl p-6">
-                      <p className="text-sm text-[#010d3e] mb-2">Total Enhancements</p>
+                      <p className="text-sm text-[#010d3e] mb-2">Daily Limit</p>
                       <p className="text-[32px] font-bold text-black">
-                        {usage.totalEnhancements === -1 ? 'Unlimited' : usage.totalEnhancements.toLocaleString()}
+                        {usage.totalEnhancements.toLocaleString()}
                       </p>
                     </div>
                     <div className="bg-gradient-to-br from-[#eaeefe] to-[#c1cefa] rounded-xl p-6">
-                      <p className="text-sm text-[#010d3e] mb-2">Used This Period</p>
+                      <p className="text-sm text-[#010d3e] mb-2">Used Today</p>
                       <p className="text-[32px] font-bold text-black">{usage.usedEnhancements.toLocaleString()}</p>
                     </div>
                     <div className="bg-gradient-to-br from-[#eaeefe] to-[#c1cefa] rounded-xl p-6">
-                      <p className="text-sm text-[#010d3e] mb-2">Remaining</p>
+                      <p className="text-sm text-[#010d3e] mb-2">Remaining Today</p>
                       <p className="text-[32px] font-bold text-black">
-                        {usage.remainingEnhancements === null ? 'Unlimited' : usage.remainingEnhancements.toLocaleString()}
+                        {usage.remainingEnhancements !== null ? usage.remainingEnhancements.toLocaleString() : '0'}
                       </p>
                     </div>
                   </div>
@@ -330,30 +337,26 @@ export default function Subscription() {
                   <div className="pt-4 border-t border-gray-200">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-gray-600 mb-1">Usage Resets On</p>
+                        <p className="text-sm text-gray-600 mb-1">Usage Resets</p>
                         <p className="text-[18px] font-semibold text-black">
                           {formatDate(usage.resetDate)}
                         </p>
                       </div>
                       <div className="text-right">
                         <p className="text-sm text-gray-600 mb-1">Progress</p>
-                        {usage.totalEnhancements === -1 ? (
-                          <p className="text-[18px] font-semibold text-black">Unlimited</p>
-                        ) : (
-                          <div className="flex items-center">
-                            <div className="w-32 bg-gray-200 rounded-full h-2 mr-3">
-                              <div
-                                className="bg-[#2563EB] h-2 rounded-full"
-                                style={{
-                                  width: `${Math.min((usage.usedEnhancements / usage.totalEnhancements) * 100, 100)}%`,
-                                }}
-                              />
-                            </div>
-                            <span className="text-[18px] font-semibold text-black">
-                              {Math.round((usage.usedEnhancements / usage.totalEnhancements) * 100)}%
-                            </span>
+                        <div className="flex items-center">
+                          <div className="w-32 bg-gray-200 rounded-full h-2 mr-3">
+                            <div
+                              className="bg-[#2563EB] h-2 rounded-full"
+                              style={{
+                                width: `${Math.min((usage.usedEnhancements / usage.totalEnhancements) * 100, 100)}%`,
+                              }}
+                            />
                           </div>
-                        )}
+                          <span className="text-[18px] font-semibold text-black">
+                            {Math.round((usage.usedEnhancements / usage.totalEnhancements) * 100)}%
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>

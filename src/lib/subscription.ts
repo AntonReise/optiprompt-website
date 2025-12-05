@@ -62,6 +62,13 @@ export async function getUserSubscription(): Promise<SubscriptionData | null> {
   }
 }
 
+// Daily usage limits by plan
+const DAILY_LIMITS = {
+  free: 3,
+  pro: 100,
+  business: 100, // Same as pro for now
+};
+
 /**
  * Get user usage statistics
  */
@@ -72,25 +79,43 @@ export async function getUserUsage(): Promise<UsageData | null> {
 
     const supabase = createClient();
 
+    // First, get the user's subscription to determine their daily limit
+    const subscriptionData = await getUserSubscription();
+    const plan = subscriptionData?.plan || 'free';
+    const dailyLimit = DAILY_LIMITS[plan] || DAILY_LIMITS.free;
+
+    // Fetch usage data
     const { data, error } = await supabase
       .from('usage')
-      .select('*')
+      .select('used_enhancements, reset_date')
       .eq('user_id', user.id)
       .single();
 
-    if (error) {
-      console.error('Error fetching usage:', error);
-      return null;
+    // Calculate reset date (end of current day in user's timezone)
+    const now = new Date();
+    const endOfDay = new Date(now);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    // If no usage entry exists yet, return default values
+    if (error || !data) {
+      return {
+        totalEnhancements: dailyLimit,
+        usedEnhancements: 0,
+        remainingEnhancements: dailyLimit,
+        resetDate: endOfDay.toISOString(),
+      };
     }
 
+    // Check if the reset_date has passed (new day), meaning usage should be reset
+    const resetDate = new Date(data.reset_date);
+    const usedEnhancements = now > resetDate ? 0 : data.used_enhancements;
+    const remainingEnhancements = Math.max(0, dailyLimit - usedEnhancements);
+
     return {
-      totalEnhancements: data.total_enhancements,
-      usedEnhancements: data.used_enhancements,
-      remainingEnhancements:
-        data.total_enhancements === -1
-          ? null
-          : data.total_enhancements - data.used_enhancements,
-      resetDate: data.reset_date,
+      totalEnhancements: dailyLimit,
+      usedEnhancements,
+      remainingEnhancements,
+      resetDate: now > resetDate ? endOfDay.toISOString() : data.reset_date,
     };
   } catch (error) {
     console.error('Error fetching usage:', error);

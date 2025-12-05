@@ -329,16 +329,6 @@ const Account: React.FC = () => {
                 </Button>
               </div>
             </div>
-
-            {/* Back link */}
-            <div className="mt-6 text-center">
-              <Link
-                href="/"
-                className="text-gray-500 hover:text-gray-700 transition-colors text-sm"
-              >
-                ← Back to Home
-              </Link>
-            </div>
           </div>
         </div>
       </section>
