@@ -24,6 +24,7 @@ interface UsageData {
   usedEnhancements: number; // Calls in last 24 hours
   remainingEnhancements: number | null; // null for unlimited
   totalUsage: number; // Lifetime usage count
+  nextResetAt: string | null;
 }
 
 export default function Subscription() {
@@ -59,6 +60,7 @@ export default function Subscription() {
             usedEnhancements: 12,
             remainingEnhancements: null,
             totalUsage: 247,
+            nextResetAt: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
           };
 
           setSubscription(mockSubscription);
@@ -95,6 +97,7 @@ export default function Subscription() {
             usedEnhancements: 0,
             remainingEnhancements: dailyLimit,
             totalUsage: 0,
+            nextResetAt: null,
           });
         }
       } catch (err: any) {
@@ -198,11 +201,13 @@ export default function Subscription() {
     return colors[status] || 'bg-gray-100 text-gray-700 border-gray-200';
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
+  const formatDateTime = (dateString: string) => {
+    return new Date(dateString).toLocaleString('en-US', {
+      month: 'short',
       day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
     });
   };
 
@@ -281,7 +286,7 @@ export default function Subscription() {
                   <div className="mt-6">
                     <p className="text-sm text-gray-600 mb-1">Next Billing Date</p>
                     <p className="text-[24px] font-bold text-black">
-                      {subscription?.currentPeriodEnd ? formatDate(subscription.currentPeriodEnd) : 'N/A'}
+                      {subscription?.currentPeriodEnd ? formatDateTime(subscription.currentPeriodEnd).split(',')[0] : 'N/A'}
                     </p>
                   </div>
                 )}
@@ -343,13 +348,13 @@ export default function Subscription() {
                       </p>
                     </div>
                     <div className="bg-gradient-to-br from-[#eaeefe] to-[#c1cefa] rounded-xl p-6">
-                      <p className="text-sm text-[#010d3e] mb-2">Used (24h)</p>
+                      <p className="text-sm text-[#010d3e] mb-2">Used Today</p>
                       <p className="text-[32px] font-bold text-black">{usage.usedEnhancements.toLocaleString()}</p>
                     </div>
                     <div className="bg-gradient-to-br from-[#eaeefe] to-[#c1cefa] rounded-xl p-6">
-                      <p className="text-sm text-[#010d3e] mb-2">Remaining (24h)</p>
+                      <p className="text-sm text-[#010d3e] mb-2">Available Now</p>
                       <p className="text-[32px] font-bold text-black">
-                        {usage.remainingEnhancements !== null ? usage.remainingEnhancements.toLocaleString() : '0'}
+                        {usage.remainingEnhancements !== null ? usage.remainingEnhancements.toLocaleString() : 'Unlimited'}
                       </p>
                     </div>
                     <div className="bg-gradient-to-br from-[#fef3c7] to-[#fbbf24] rounded-xl p-6">
@@ -363,9 +368,11 @@ export default function Subscription() {
                   <div className="pt-4 border-t border-gray-200">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-gray-600 mb-1">Rolling Window</p>
+                        <p className="text-sm text-gray-600 mb-1">Refresh Schedule</p>
                         <p className="text-[18px] font-semibold text-black">
-                          Last 24 hours
+                          {usage.nextResetAt 
+                            ? `Next slot available at ${formatDateTime(usage.nextResetAt).split(', ')[1]}`
+                            : 'All slots available'}
                         </p>
                       </div>
                       <div className="text-right">
@@ -394,18 +401,6 @@ export default function Subscription() {
                   <p className="text-gray-600">No usage data available</p>
                 </div>
               )}
-            </div>
-
-            {/* Additional Actions */}
-            <div className="mt-8 flex flex-col sm:flex-row gap-4">
-              <Link href="/" className="flex-1">
-                <Button
-                  variant="secondary"
-                  className="w-full rounded-[10px] bg-white border border-gray-300 text-black hover:bg-gray-50 px-6 py-3 h-[50px] text-[16px] font-medium"
-                >
-                  Back to Home
-                </Button>
-              </Link>
             </div>
           </div>
         </div>

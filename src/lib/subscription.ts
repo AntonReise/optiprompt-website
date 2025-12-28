@@ -27,6 +27,7 @@ export interface UsageData {
   usedEnhancements: number; // Calls in last 24 hours
   remainingEnhancements: number | null; // null for unlimited
   totalUsage: number; // Lifetime usage count
+  nextResetAt: string | null; // Time when the oldest call in the last 24h expires
 }
 
 /**
@@ -110,7 +111,27 @@ export async function getUserUsage(): Promise<UsageData | null> {
         usedEnhancements: 0,
         remainingEnhancements: dailyLimit,
         totalUsage: 0,
+        nextResetAt: null,
       };
+    }
+
+    // Get the timestamp of the oldest call in the last 24 hours to determine next reset
+    let nextResetAt = null;
+    if (callsInLast24Hours && callsInLast24Hours > 0) {
+      const { data: oldestCall, error: oldestCallError } = await supabase
+        .from('tool_calls')
+        .select('created_at')
+        .eq('user_id', user.id)
+        .gte('created_at', twentyFourHoursAgo.toISOString())
+        .order('created_at', { ascending: true })
+        .limit(1)
+        .single();
+
+      if (oldestCall && !oldestCallError) {
+        const oldestCallDate = new Date(oldestCall.created_at);
+        const resetDate = new Date(oldestCallDate.getTime() + 24 * 60 * 60 * 1000);
+        nextResetAt = resetDate.toISOString();
+      }
     }
 
     const usedEnhancements = callsInLast24Hours || 0;
@@ -122,6 +143,7 @@ export async function getUserUsage(): Promise<UsageData | null> {
       usedEnhancements,
       remainingEnhancements,
       totalUsage,
+      nextResetAt,
     };
   } catch (error) {
     console.error('Error fetching usage:', error);
