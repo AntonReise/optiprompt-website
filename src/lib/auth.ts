@@ -46,14 +46,16 @@ export const getCurrentUser = async (): Promise<User | null> => {
 export const signInWithGitHub = async (next?: string): Promise<{ error: AuthError | null }> => {
   try {
     const supabase = createClient();
-    const redirectTo = next 
-      ? `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`
-      : `${window.location.origin}/auth/callback`;
-    
+    const isLocal = typeof window !== 'undefined' && window.location.hostname === 'localhost';
+    const callbackUrl = new URL(`${window.location.origin}/auth/callback`);
+
+    if (next) callbackUrl.searchParams.set('next', next);
+    if (isLocal) callbackUrl.searchParams.set('origin', 'local');
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {
-        redirectTo,
+        redirectTo: callbackUrl.toString(),
       },
     });
 
