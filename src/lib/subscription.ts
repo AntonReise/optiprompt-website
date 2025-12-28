@@ -10,6 +10,7 @@
 
 import { createClient } from '@/lib/supabase/client';
 import { getCurrentUser, getSession } from './auth';
+import { BILLING_ENABLED } from '@/lib/config';
 
 export interface SubscriptionData {
   plan: 'free' | 'pro' | 'business';
@@ -130,6 +131,12 @@ export async function createCheckoutSession(): Promise<{
   url: string | null;
   error: Error | null;
 }> {
+  // Check billing feature flag
+  if (!BILLING_ENABLED) {
+    console.warn('Billing is disabled; ignoring checkout session creation.');
+    return { url: null, error: new Error('Billing is currently disabled') };
+  }
+
   try {
     const session = await getSession();
     if (!session?.access_token) {
@@ -166,6 +173,12 @@ export async function createStripePortalSession(): Promise<{
   url: string | null;
   error: Error | null;
 }> {
+  // Check billing feature flag
+  if (!BILLING_ENABLED) {
+    console.warn('Billing is disabled; ignoring portal session creation.');
+    return { url: null, error: new Error('Billing is currently disabled') };
+  }
+
   try {
     const session = await getSession();
     if (!session?.access_token) {

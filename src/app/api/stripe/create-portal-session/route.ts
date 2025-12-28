@@ -11,6 +11,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
+import { BILLING_ENABLED } from '@/lib/config';
 
 // Initialize Stripe
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
@@ -33,6 +34,14 @@ if (!supabaseUrl || !supabaseServiceKey) {
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 export async function POST(request: NextRequest) {
+  // Check billing feature flag
+  if (!BILLING_ENABLED) {
+    return NextResponse.json(
+      { error: 'Billing is currently disabled' },
+      { status: 403 }
+    );
+  }
+
   try {
     // Get the authorization header
     const authHeader = request.headers.get('authorization');

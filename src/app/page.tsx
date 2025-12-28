@@ -8,6 +8,7 @@ import Accordion from '@/components/common/Accordion';
 import Button from '@/components/ui/Button';
 import Tag from '@/components/ui/Tag';
 import { FeatureCard, PricingPlan, FAQ } from '@/types/home';
+import { BILLING_ENABLED } from '@/lib/config';
 
 export default function Home() {
   const features: FeatureCard[] = [
@@ -57,33 +58,15 @@ export default function Home() {
       price: '€9',
       period: '/monthly',
       features: [
-        'Unlimited enhancements',
+        '100 enhancements per day',
         'Compatible with all MCP-enabled IDEs',
         'Early Access to new features',
         'Advanced context optimization',
         'Priority support'
       ],
-      buttonText: 'Sign up now',
+      buttonText: BILLING_ENABLED ? 'Sign up now' : 'Coming soon',
       isPopular: true,
       buttonVariant: 'secondary'
-    },
-    {
-      id: 3,
-      name: 'Business',
-      price: '€12',
-      period: '/monthly per user',
-      features: [
-        'Enforce privacy mode org-wide',
-        'Admin dashboard with usage stats',
-        'Centralized billing',
-        'Unlimited enhancements',
-        'Compatible with all MCP-enabled IDEs',
-        'Advanced context optimization',
-        'Early Access to new features',
-        'Priority support'
-      ],
-      buttonText: 'coming soon',
-      buttonVariant: 'primary'
     }
   ];
 
@@ -106,12 +89,14 @@ export default function Home() {
     {
       id: 4,
       question: 'Can I cancel my subscription?',
-      answer: 'Yes, you can cancel your subscription at any time. Your access will continue until the end of your current billing period.'
+      answer: BILLING_ENABLED 
+        ? 'Yes, you can cancel your subscription at any time. Your access will continue until the end of your current billing period.'
+        : 'Paid subscriptions are not yet available. OptiPrompt is currently free while we\'re in early access.'
     },
     {
       id: 5,
-      question: 'How does the pricing work for teams?',
-      answer: 'Our Business plan is priced per user per month, with centralized billing and administration for your entire engineering organization.'
+      question: 'When will Pro plan be available?',
+      answer: 'We\'re working on enabling paid Pro subscriptions. For now, OptiPrompt is completely free. Stay tuned for updates!'
     }
   ];
 
@@ -131,33 +116,6 @@ export default function Home() {
             <p className="text-[22px] text-[#010d3e] max-w-[500px] mb-12">
               OptiPrompt's MCP server seamlessly enhances any IDE with advanced meta-prompting, delivering precisely tailored code for your projects.
             </p>
-            
-            <div className="flex items-center space-x-6">
-              <Link href="/login">
-                <Button 
-                  variant="secondary" className="rounded-[10px] bg-white text-black px-6 py-3 h-[48px] text-[16px] font-medium flex items-center"
-                >
-                  <Image src="/images/chat-icon.svg" alt="Login" width={24} height={24} className="mr-3" />
-                  Login
-                </Button>
-              </Link>
-              
-              <Button 
-                variant="primary" className="rounded-[10px] bg-[#2563EB] hover:bg-[#1E40AF] transition-colors text-white px-6 py-3 h-[48px] text-[16px] font-medium"
-              >
-                Subscribe
-              </Button>
-              
-              <Link href="#features" className="flex items-center text-[16px] font-medium text-black ml-2">
-                Learn more
-                <Image 
-                  src="/images/img_icons.svg" alt="Learn more" 
-                  width={20} 
-                  height={20} 
-                  className="ml-2"
-                />
-              </Link>
-            </div>
           </div>
         </div>
       </section>
@@ -211,12 +169,14 @@ export default function Home() {
             <p className="text-[18px] text-[#010d3e] max-w-[600px] mx-auto mb-8">
               Set up our MCP server and leverage advanced meta-prompting to get higher-quality, production-ready code from your AI assistant. Compatible with any IDE that supports the Model Context Protocol.
             </p>
-            <Button 
-              variant="primary" className="rounded-[10px] bg-[#2563EB] hover:bg-[#1E40AF] transition-colors text-white px-8 py-4 text-[18px] font-medium flex items-center mx-auto"
-            >
-              <Image src="/images/chat-icon.svg" alt="MCP" width={24} height={24} className="mr-3" />
-              Get Started with OptiPrompt MCP
-            </Button>
+            <Link href="/login">
+              <Button 
+                variant="primary" className="rounded-[10px] bg-[#2563EB] hover:bg-[#1E40AF] transition-colors text-white px-8 py-4 text-[18px] font-medium flex items-center mx-auto"
+              >
+                <Image src="/images/chat-icon.svg" alt="MCP" width={24} height={24} className="mr-3" />
+                Get Started with OptiPrompt MCP
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -280,7 +240,7 @@ export default function Home() {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20 md:items-stretch">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-20 md:items-stretch">
             {pricingPlans.map((plan) => (
               <div 
                 key={plan.id} 
@@ -325,18 +285,41 @@ export default function Home() {
                 </div>
                 
                 <div className="mt-8">
-                  <Button 
-                    variant={plan.buttonVariant}
-                    className={`w-full rounded-[10px] py-3 text-[16px] font-medium ${
-                      plan.isPopular
-                        ? "bg-white text-black hover:bg-gray-100"
-                        : plan.buttonVariant === "primary"
-                        ? "bg-[#2563EB] text-white hover:bg-[#1E40AF]"
-                        : "bg-[#010d3e] text-white hover:bg-[#0a1956]"
-                    }`}
-                  >
-                    {plan.buttonText}
-                  </Button>
+                  {plan.id === 1 ? (
+                    // Free plan - link to signup/login
+                    <Link href="/login" className="block">
+                      <Button 
+                        variant={plan.buttonVariant}
+                        className={`w-full rounded-[10px] py-3 text-[16px] font-medium ${
+                          plan.buttonVariant === "primary"
+                            ? "bg-[#2563EB] text-white hover:bg-[#1E40AF]"
+                            : "bg-[#010d3e] text-white hover:bg-[#0a1956]"
+                        }`}
+                      >
+                        {plan.buttonText}
+                      </Button>
+                    </Link>
+                  ) : (
+                    // Pro plan - check billing flag
+                    <>
+                      <Button 
+                        variant={plan.buttonVariant}
+                        disabled={!BILLING_ENABLED}
+                        className={`w-full rounded-[10px] py-3 text-[16px] font-medium ${
+                          plan.isPopular
+                            ? "bg-white text-black hover:bg-gray-100 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
+                            : "bg-[#010d3e] text-white hover:bg-[#0a1956] disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
+                        }`}
+                      >
+                        {plan.buttonText}
+                      </Button>
+                      {!BILLING_ENABLED && (
+                        <p className="text-sm text-gray-600 mt-3 text-center">
+                          Paid Pro plan is currently not available. OptiPrompt is free while we're in early access.
+                        </p>
+                      )}
+                    </>
+                  )}
                 </div>
               </div>
             ))}
@@ -382,18 +365,12 @@ export default function Home() {
               Join thousands of developers using OptiPrompt's MCP server to enhance their AI coding experience across any IDE.
             </p>
             <div className="flex gap-6">
-              <Button 
-                variant="primary" 
-                className="rounded-[10px] bg-[#2563EB] hover:bg-[#1E40AF] transition-colors text-white px-8 py-3 text-[18px] font-medium"
-              >
-                Get Started Free
-              </Button>
-              <Link href="/contact">
+              <Link href="/login">
                 <Button 
-                  variant="secondary" 
-                  className="rounded-[10px] bg-white border border-black text-black px-8 py-3 text-[18px] font-medium"
+                  variant="primary" 
+                  className="rounded-[10px] bg-[#2563EB] hover:bg-[#1E40AF] transition-colors text-white px-8 py-3 text-[18px] font-medium"
                 >
-                  Contact Sales
+                  Get Started For Free
                 </Button>
               </Link>
             </div>

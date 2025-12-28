@@ -31,17 +31,11 @@ const Header: React.FC = () => {
           <Link href="/setup" className="text-[16px] text-[#00000099] hover:text-black font-normal">
             Setup
           </Link>
-          <Link href="#features" className="text-[16px] text-[#00000099] hover:text-black font-normal">
-            Features
-          </Link>
           <Link href="#pricing" className="text-[16px] text-[#00000099] hover:text-black font-normal">
             Pricing
           </Link>
           <Link href="#faq" className="text-[16px] text-[#00000099] hover:text-black font-normal">
             FAQ
-          </Link>
-          <Link href="/contact" className="text-[16px] text-[#00000099] hover:text-black font-normal">
-            Contact
           </Link>
         </nav>
         

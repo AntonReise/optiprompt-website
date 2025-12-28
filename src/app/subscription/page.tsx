@@ -10,6 +10,7 @@ import Image from 'next/image';
 import { isSupabaseConfigured } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import { getUserSubscription, getUserUsage, createStripePortalSession, createCheckoutSession } from '@/lib/subscription';
+import { BILLING_ENABLED } from '@/lib/config';
 
 interface SubscriptionData {
   plan: 'free' | 'pro' | 'business';
@@ -109,6 +110,11 @@ export default function Subscription() {
   }, [router, user, isAuthenticated, authLoading]);
 
   const handleUpgradeToPro = async () => {
+    if (!BILLING_ENABLED) {
+      console.warn('Billing is disabled; ignoring upgrade action.');
+      return;
+    }
+
     setIsRedirecting(true);
     try {
       if (!isSupabaseConfigured()) {
@@ -134,6 +140,11 @@ export default function Subscription() {
   };
 
   const handleManageSubscription = async () => {
+    if (!BILLING_ENABLED) {
+      console.warn('Billing is disabled; ignoring portal action.');
+      return;
+    }
+
     setIsRedirecting(true);
     try {
       if (!isSupabaseConfigured()) {
@@ -284,8 +295,17 @@ export default function Subscription() {
                 </div>
               )}
 
-              {/* Show upgrade button if user is on free plan or has no active subscription */}
-              {(subscription?.plan === 'free' || subscription?.status !== 'active') && (
+              {/* Show billing disabled message when billing is disabled */}
+              {!BILLING_ENABLED && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                  <p className="text-sm text-blue-800">
+                    Paid Pro subscriptions are not available yet. You currently have access to the free plan while we prepare billing.
+                  </p>
+                </div>
+              )}
+
+              {/* Show upgrade button if user is on free plan and billing is enabled */}
+              {BILLING_ENABLED && (subscription?.plan === 'free' || subscription?.status !== 'active') && (
                 <Button
                   onClick={handleUpgradeToPro}
                   variant="primary"
@@ -296,8 +316,8 @@ export default function Subscription() {
                 </Button>
               )}
 
-              {/* Show manage subscription button if user has active subscription */}
-              {subscription?.plan !== 'free' && subscription?.status === 'active' && (
+              {/* Show manage subscription button if user has active subscription and billing is enabled */}
+              {BILLING_ENABLED && subscription?.plan !== 'free' && subscription?.status === 'active' && (
                 <Button
                   onClick={handleManageSubscription}
                   variant="primary"
@@ -378,14 +398,6 @@ export default function Subscription() {
                   className="w-full rounded-[10px] bg-white border border-gray-300 text-black hover:bg-gray-50 px-6 py-3 h-[50px] text-[16px] font-medium"
                 >
                   Back to Home
-                </Button>
-              </Link>
-              <Link href="/contact" className="flex-1">
-                <Button
-                  variant="secondary"
-                  className="w-full rounded-[10px] bg-white border border-gray-300 text-black hover:bg-gray-50 px-6 py-3 h-[50px] text-[16px] font-medium"
-                >
-                  Contact Support
                 </Button>
               </Link>
             </div>

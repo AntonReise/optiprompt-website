@@ -313,14 +313,6 @@ Always follow this workflow whenever it would improve reasoning quality.`}</code
                 Follow the steps above to set up OptiPrompt and start optimizing your prompts. If you run into any issues, our support team is here to help.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link href="/contact">
-                  <Button 
-                    variant="primary" 
-                    className="rounded-[10px] bg-[#2563EB] hover:bg-[#1E40AF] transition-colors text-white px-8 py-3 h-[50px] text-[16px] font-medium"
-                  >
-                    Contact Support
-                  </Button>
-                </Link>
                 <a 
                   href="https://github.com/AntonReise/OptiPrompt" 
                   target="_blank" 

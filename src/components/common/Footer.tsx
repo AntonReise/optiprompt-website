@@ -6,72 +6,39 @@ import Link from 'next/link';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-black text-white py-10">
+    <footer className="bg-black text-white py-8">
       <div className="container mx-auto px-5">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-          <div className="col-span-1 md:col-span-4">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div className="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-12">
             <Image 
-              src="/images/img_optiprompt_2.png" alt="Promptimize Logo" 
+              src="/images/img_optiprompt_2.png" alt="OptiPrompt Logo" 
               width={159} 
               height={54} 
-              className="mb-4"
+              className="mb-2 md:mb-0"
             />
-            <p className="text-[14px] text-[#bcbcbc] max-w-[240px] mb-8">
+            <p className="text-[14px] text-[#bcbcbc] max-w-[300px]">
               The AI prompt optimizer that makes your coding assistant actually understand what you need.
             </p>
-            <div className="flex space-x-5">
-              <Link href="#" aria-label="Twitter">
-                <Image src="/images/img_socials.svg" alt="Twitter" width={24} height={24} />
+          </div>
+          
+          <div className="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8">
+            <div className="flex flex-col gap-2">
+              <p className="text-[14px] text-[#bcbcbc]">
+                Contact email: <a href="mailto:anton.reise@outlook.com" className="text-white hover:underline">anton.reise@outlook.com</a>
+              </p>
+              <p className="text-[14px] text-[#bcbcbc]">
+                Contact number: <a href="tel:+4917621199167" className="text-white hover:underline">+49 176 21199167</a>
+              </p>
+            </div>
+            
+            <div className="flex gap-6">
+              <Link href="#" className="text-[14px] text-[#7b7b7b] hover:text-white">
+                Privacy
               </Link>
-              <Link href="#" aria-label="LinkedIn">
-                <Image src="/images/img_socials_1.svg" alt="LinkedIn" width={24} height={24} />
-              </Link>
-              <Link href="#" aria-label="GitHub">
-                <Image src="/images/img_socials_24x24.svg" alt="GitHub" width={24} height={24} />
+              <Link href="#" className="text-[14px] text-[#7b7b7b] hover:text-white">
+                Terms
               </Link>
             </div>
-          </div>
-          
-          <div className="col-span-1 md:col-span-2">
-            <h3 className="text-[14px] font-bold mb-4">Product</h3>
-            <ul className="space-y-4">
-              <li><Link href="#" className="text-[14px] text-[#7b7b7b] hover:text-white">Features</Link></li>
-              <li><Link href="#" className="text-[14px] text-[#7b7b7b] hover:text-white">Integrations</Link></li>
-              <li><Link href="#" className="text-[14px] text-[#7b7b7b] hover:text-white">Updates</Link></li>
-              <li><Link href="#" className="text-[14px] text-[#7b7b7b] hover:text-white">FAQ</Link></li>
-              <li><Link href="#" className="text-[14px] text-[#7b7b7b] hover:text-white">Pricing</Link></li>
-            </ul>
-          </div>
-          
-          <div className="col-span-1 md:col-span-2">
-            <h3 className="text-[14px] font-bold mb-4">Company</h3>
-            <ul className="space-y-4">
-              <li><Link href="#" className="text-[14px] text-[#7b7b7b] hover:text-white">About</Link></li>
-              <li><Link href="#" className="text-[14px] text-[#7b7b7b] hover:text-white">Blog</Link></li>
-              <li><Link href="#" className="text-[14px] text-[#7b7b7b] hover:text-white">Careers</Link></li>
-              <li><Link href="#" className="text-[14px] text-[#7b7b7b] hover:text-white">Manifesto</Link></li>
-              <li><Link href="#" className="text-[14px] text-[#7b7b7b] hover:text-white">Press</Link></li>
-              <li><Link href="#" className="text-[14px] text-[#7b7b7b] hover:text-white">Contact</Link></li>
-            </ul>
-          </div>
-          
-          <div className="col-span-1 md:col-span-2">
-            <h3 className="text-[14px] font-bold mb-4">Resources</h3>
-            <ul className="space-y-4">
-              <li><Link href="#" className="text-[14px] text-[#7b7b7b] hover:text-white">Examples</Link></li>
-              <li><Link href="#" className="text-[14px] text-[#7b7b7b] hover:text-white">Community</Link></li>
-              <li><Link href="#" className="text-[14px] text-[#7b7b7b] hover:text-white">Guides</Link></li>
-              <li><Link href="#" className="text-[14px] text-[#7b7b7b] hover:text-white">Docs</Link></li>
-            </ul>
-          </div>
-          
-          <div className="col-span-1 md:col-span-2">
-            <h3 className="text-[14px] font-bold mb-4">Legal</h3>
-            <ul className="space-y-4">
-              <li><Link href="#" className="text-[14px] text-[#7b7b7b] hover:text-white">Privacy</Link></li>
-              <li><Link href="#" className="text-[14px] text-[#7b7b7b] hover:text-white">Terms</Link></li>
-              <li><Link href="#" className="text-[14px] text-[#7b7b7b] hover:text-white">Security</Link></li>
-            </ul>
           </div>
         </div>
       </div>
