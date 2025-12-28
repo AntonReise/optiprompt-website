@@ -21,9 +21,9 @@ interface SubscriptionData {
 
 interface UsageData {
   totalEnhancements: number;
-  usedEnhancements: number;
+  usedEnhancements: number; // Calls in last 24 hours
   remainingEnhancements: number | null; // null for unlimited
-  resetDate: string;
+  totalUsage: number; // Lifetime usage count
 }
 
 export default function Subscription() {
@@ -56,9 +56,9 @@ export default function Subscription() {
 
           const mockUsage: UsageData = {
             totalEnhancements: -1,
-            usedEnhancements: 247,
+            usedEnhancements: 12,
             remainingEnhancements: null,
-            resetDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+            totalUsage: 247,
           };
 
           setSubscription(mockSubscription);
@@ -94,7 +94,7 @@ export default function Subscription() {
             totalEnhancements: dailyLimit,
             usedEnhancements: 0,
             remainingEnhancements: dailyLimit,
-            resetDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+            totalUsage: 0,
           });
         }
       } catch (err: any) {
@@ -335,7 +335,7 @@ export default function Subscription() {
 
               {usage && (
                 <div className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div className="bg-gradient-to-br from-[#eaeefe] to-[#c1cefa] rounded-xl p-6">
                       <p className="text-sm text-[#010d3e] mb-2">Daily Limit</p>
                       <p className="text-[32px] font-bold text-black">
@@ -343,13 +343,19 @@ export default function Subscription() {
                       </p>
                     </div>
                     <div className="bg-gradient-to-br from-[#eaeefe] to-[#c1cefa] rounded-xl p-6">
-                      <p className="text-sm text-[#010d3e] mb-2">Used Today</p>
+                      <p className="text-sm text-[#010d3e] mb-2">Used (24h)</p>
                       <p className="text-[32px] font-bold text-black">{usage.usedEnhancements.toLocaleString()}</p>
                     </div>
                     <div className="bg-gradient-to-br from-[#eaeefe] to-[#c1cefa] rounded-xl p-6">
-                      <p className="text-sm text-[#010d3e] mb-2">Remaining Today</p>
+                      <p className="text-sm text-[#010d3e] mb-2">Remaining (24h)</p>
                       <p className="text-[32px] font-bold text-black">
                         {usage.remainingEnhancements !== null ? usage.remainingEnhancements.toLocaleString() : '0'}
+                      </p>
+                    </div>
+                    <div className="bg-gradient-to-br from-[#fef3c7] to-[#fbbf24] rounded-xl p-6">
+                      <p className="text-sm text-[#78350f] mb-2">Total (Lifetime)</p>
+                      <p className="text-[32px] font-bold text-black">
+                        {usage.totalUsage.toLocaleString()}
                       </p>
                     </div>
                   </div>
@@ -357,9 +363,9 @@ export default function Subscription() {
                   <div className="pt-4 border-t border-gray-200">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-gray-600 mb-1">Usage Resets</p>
+                        <p className="text-sm text-gray-600 mb-1">Rolling Window</p>
                         <p className="text-[18px] font-semibold text-black">
-                          {formatDate(usage.resetDate)}
+                          Last 24 hours
                         </p>
                       </div>
                       <div className="text-right">

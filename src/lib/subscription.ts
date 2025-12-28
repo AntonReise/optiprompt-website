@@ -5,7 +5,8 @@
  *
  * Expected database schema:
  * - subscriptions table with columns: user_id, plan, status, stripe_customer_id, stripe_subscription_id, current_period_end, cancel_at_period_end
- * - usage table with columns: user_id, total_enhancements, used_enhancements, reset_date
+ * - usage table with columns: user_id, total_usage (lifetime count)
+ * - tool_calls table with columns: id, user_id, tool_name, created_at (for rolling 24-hour window tracking)
  */
 
 import { createClient } from '@/lib/supabase/client';
@@ -23,9 +24,9 @@ export interface SubscriptionData {
 
 export interface UsageData {
   totalEnhancements: number; // -1 for unlimited
-  usedEnhancements: number;
+  usedEnhancements: number; // Calls in last 24 hours
   remainingEnhancements: number | null; // null for unlimited
-  resetDate: string;
+  totalUsage: number; // Lifetime usage count
 }
 
 /**
@@ -85,38 +86,42 @@ export async function getUserUsage(): Promise<UsageData | null> {
     const plan = subscriptionData?.plan || 'free';
     const dailyLimit = DAILY_LIMITS[plan] || DAILY_LIMITS.free;
 
-    // Fetch usage data
-    const { data, error } = await supabase
+    // Count calls in the last 24 hours
+    const twentyFourHoursAgo = new Date();
+    twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
+
+    const { count: callsInLast24Hours, error: callsError } = await supabase
+      .from('tool_calls')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .gte('created_at', twentyFourHoursAgo.toISOString());
+
+    // Fetch total lifetime usage
+    const { data: usageData, error: usageError } = await supabase
       .from('usage')
-      .select('used_enhancements, reset_date')
+      .select('total_usage')
       .eq('user_id', user.id)
       .single();
 
-    // Calculate reset date (end of current day in user's timezone)
-    const now = new Date();
-    const endOfDay = new Date(now);
-    endOfDay.setHours(23, 59, 59, 999);
-
     // If no usage entry exists yet, return default values
-    if (error || !data) {
+    if ((callsError && callsError.code !== 'PGRST116') || usageError) {
       return {
         totalEnhancements: dailyLimit,
         usedEnhancements: 0,
         remainingEnhancements: dailyLimit,
-        resetDate: endOfDay.toISOString(),
+        totalUsage: 0,
       };
     }
 
-    // Check if the reset_date has passed (new day), meaning usage should be reset
-    const resetDate = new Date(data.reset_date);
-    const usedEnhancements = now > resetDate ? 0 : data.used_enhancements;
+    const usedEnhancements = callsInLast24Hours || 0;
+    const totalUsage = usageData?.total_usage || 0;
     const remainingEnhancements = Math.max(0, dailyLimit - usedEnhancements);
 
     return {
       totalEnhancements: dailyLimit,
       usedEnhancements,
       remainingEnhancements,
-      resetDate: now > resetDate ? endOfDay.toISOString() : data.reset_date,
+      totalUsage,
     };
   } catch (error) {
     console.error('Error fetching usage:', error);
