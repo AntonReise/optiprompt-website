@@ -38,7 +38,10 @@ const LoginContent: React.FC = () => {
     setIsSubmitting(true);
     setError(null);
 
-    const { error } = await signInWithGitHub();
+    // Get the 'next' parameter from URL to pass through OAuth flow
+    const nextParam = searchParams.get('next') || undefined;
+
+    const { error } = await signInWithGitHub(nextParam || undefined);
 
     if (error) {
       setError(error.message || 'An error occurred during login. Please try again.');

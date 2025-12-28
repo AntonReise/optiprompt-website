@@ -116,6 +116,15 @@ export default function Home() {
             <p className="text-[22px] text-[#010d3e] max-w-[500px] mb-12">
               OptiPrompt's MCP server seamlessly enhances any IDE with advanced meta-prompting, delivering precisely tailored code for your projects.
             </p>
+            
+            <Link href="/login?next=/setup">
+              <Button 
+                variant="primary" 
+                className="rounded-[10px] bg-black hover:bg-gray-800 transition-colors text-white px-8 py-4 text-[18px] font-medium"
+              >
+                Get Started
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -169,12 +178,11 @@ export default function Home() {
             <p className="text-[18px] text-[#010d3e] max-w-[600px] mx-auto mb-8">
               Set up our MCP server and leverage advanced meta-prompting to get higher-quality, production-ready code from your AI assistant. Compatible with any IDE that supports the Model Context Protocol.
             </p>
-            <Link href="/login">
+            <Link href="/login?next=/setup">
               <Button 
                 variant="primary" className="rounded-[10px] bg-[#2563EB] hover:bg-[#1E40AF] transition-colors text-white px-8 py-4 text-[18px] font-medium flex items-center mx-auto"
               >
-                <Image src="/images/chat-icon.svg" alt="MCP" width={24} height={24} className="mr-3" />
-                Get Started with OptiPrompt MCP
+                Get Started
               </Button>
             </Link>
           </div>
@@ -287,7 +295,7 @@ export default function Home() {
                 <div className="mt-8">
                   {plan.id === 1 ? (
                     // Free plan - link to signup/login
-                    <Link href="/login" className="block">
+                    <Link href="/login?next=/setup" className="block">
                       <Button 
                         variant={plan.buttonVariant}
                         className={`w-full rounded-[10px] py-3 text-[16px] font-medium ${
@@ -365,7 +373,7 @@ export default function Home() {
               Join thousands of developers using OptiPrompt's MCP server to enhance their AI coding experience across any IDE.
             </p>
             <div className="flex gap-6">
-              <Link href="/login">
+              <Link href="/login?next=/setup">
                 <Button 
                   variant="primary" 
                   className="rounded-[10px] bg-[#2563EB] hover:bg-[#1E40AF] transition-colors text-white px-8 py-3 text-[18px] font-medium"

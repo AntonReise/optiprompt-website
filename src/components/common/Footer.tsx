@@ -30,15 +30,16 @@ const Footer: React.FC = () => {
                 Contact number: <a href="tel:+4917621199167" className="text-white hover:underline">+49 176 21199167</a>
               </p>
             </div>
-            
-            <div className="flex gap-6">
-              <Link href="#" className="text-[14px] text-[#7b7b7b] hover:text-white">
-                Privacy
-              </Link>
-              <Link href="#" className="text-[14px] text-[#7b7b7b] hover:text-white">
-                Terms
-              </Link>
-            </div>
+          </div>
+        </div>
+        <div className="flex justify-center mt-6">
+          <div className="flex gap-6">
+            <Link href="#" className="text-[16px] text-[#7b7b7b] hover:text-white">
+              Privacy
+            </Link>
+            <Link href="#" className="text-[16px] text-[#7b7b7b] hover:text-white">
+              Terms
+            </Link>
           </div>
         </div>
       </div>

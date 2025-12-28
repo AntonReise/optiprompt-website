@@ -43,13 +43,17 @@ export const getCurrentUser = async (): Promise<User | null> => {
 /**
  * Sign in with GitHub OAuth
  */
-export const signInWithGitHub = async (): Promise<{ error: AuthError | null }> => {
+export const signInWithGitHub = async (next?: string): Promise<{ error: AuthError | null }> => {
   try {
     const supabase = createClient();
+    const redirectTo = next 
+      ? `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`
+      : `${window.location.origin}/auth/callback`;
+    
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo,
       },
     });
 

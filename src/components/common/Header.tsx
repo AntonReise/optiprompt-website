@@ -28,13 +28,10 @@ const Header: React.FC = () => {
           <Link href="/" className="text-[16px] text-[#00000099] hover:text-black font-normal">
             Home
           </Link>
-          <Link href="/setup" className="text-[16px] text-[#00000099] hover:text-black font-normal">
-            Setup
-          </Link>
-          <Link href="#pricing" className="text-[16px] text-[#00000099] hover:text-black font-normal">
+          <Link href="/#pricing" className="text-[16px] text-[#00000099] hover:text-black font-normal">
             Pricing
           </Link>
-          <Link href="#faq" className="text-[16px] text-[#00000099] hover:text-black font-normal">
+          <Link href="/#faq" className="text-[16px] text-[#00000099] hover:text-black font-normal">
             FAQ
           </Link>
         </nav>
