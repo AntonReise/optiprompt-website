@@ -20,7 +20,7 @@ if (!stripeSecretKey) {
 }
 
 const stripe = new Stripe(stripeSecretKey, {
-  apiVersion: '2025-11-17.clover',
+  apiVersion: '2025-12-15.clover',
 });
 
 // Initialize Supabase
