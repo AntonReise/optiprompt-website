@@ -11,6 +11,8 @@ import { isSupabaseConfigured } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import { getUserSubscription, getUserUsage, createStripePortalSession, createCheckoutSession } from '@/lib/subscription';
 import { BILLING_ENABLED } from '@/lib/config';
+import { CheckCircle2, CreditCard, Activity, Clock } from 'lucide-react';
+
 
 interface SubscriptionData {
   plan: 'free' | 'pro' | 'business';
@@ -227,178 +229,166 @@ export default function Subscription() {
 
   return (
     <MainLayout>
-      
       <section className="pt-[103px] py-24 bg-white">
-        <div className="container mx-auto px-12">
+        <div className="container mx-auto px-6 md:px-12">
           <div className="max-w-4xl mx-auto">
             {/* Development Banner */}
             {!isSupabaseConfigured() && (
-              <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6 rounded">
+              <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-8 rounded-xl shadow-sm">
                 <div className="flex items-start">
                   <div className="flex-shrink-0">
-                    <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                    <svg className="h-5 w-5 text-yellow-500" viewBox="0 0 20 20" fill="currentColor">
                       <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                     </svg>
                   </div>
                   <div className="ml-3">
                     <p className="text-sm text-yellow-800">
-                      <strong>Development Preview:</strong> You're viewing this page with mock data. Authentication is not configured yet. This page will require login once Supabase is set up.
+                      <strong>Development Preview:</strong> You're viewing mock data. Authentication is not configured yet. This page will require login once Supabase is set up.
                     </p>
                   </div>
                 </div>
               </div>
             )}
 
-            <div className="mb-8">
-              <h1 className="text-[48px] font-bold text-black mb-4">Subscription & Usage</h1>
-              <p className="text-[18px] text-gray-600">
-                Manage your subscription and track your usage
+            <div className="mb-12">
+              <h1 className="text-4xl md:text-[48px] font-bold text-black mb-4 tracking-tight">Account & Billing</h1>
+              <p className="text-lg md:text-[18px] text-gray-600">
+                Manage your subscription, billing details, and prompt usage
               </p>
             </div>
 
             {error && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-                <p className="text-red-600 text-sm">{error}</p>
+              <div className="bg-red-50 border border-red-100 rounded-xl p-4 mb-8">
+                <p className="text-red-600 text-sm flex items-center">
+                  <span className="mr-2">⚠️</span> {error}
+                </p>
               </div>
             )}
 
-            {/* Subscription Status Card */}
-            <div className="bg-white rounded-2xl shadow-lg p-8 mb-8 border border-gray-100">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-[28px] font-bold text-black">Subscription Status</h2>
-                {/* Only show status badge for paid plans */}
-                {subscription?.plan !== 'free' && (
-                  <span className={`px-4 py-2 rounded-full text-sm font-medium border ${getStatusBadgeColor(subscription?.status || 'active')}`}>
-                    {subscription?.status === 'active' ? 'Active' : 
-                     subscription?.status === 'trialing' ? 'Trialing' :
-                     subscription?.status === 'canceled' ? 'Canceled' : 'Past Due'}
-                  </span>
-                )}
-              </div>
-
-              <div className="mb-6">
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Current Plan</p>
-                  <p className="text-[24px] font-bold text-black">{getPlanDisplayName(subscription?.plan || 'free')}</p>
-                </div>
-                {/* Only show billing date for paid plans */}
-                {subscription?.plan !== 'free' && (
-                  <div className="mt-6">
-                    <p className="text-sm text-gray-600 mb-1">Next Billing Date</p>
-                    <p className="text-[24px] font-bold text-black">
-                      {subscription?.currentPeriodEnd ? formatDateTime(subscription.currentPeriodEnd).split(',')[0] : 'N/A'}
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              {subscription?.cancelAtPeriodEnd && (
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-                  <p className="text-yellow-800 text-sm">
-                    Your subscription will cancel at the end of the current billing period.
-                  </p>
-                </div>
-              )}
-
-              {/* Show billing disabled message when billing is disabled */}
-              {!BILLING_ENABLED && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                  <p className="text-sm text-blue-800">
-                    Paid Pro subscriptions are not available yet. You currently have access to the free plan while we prepare billing.
-                  </p>
-                </div>
-              )}
-
-              {/* Show upgrade button if user is on free plan and billing is enabled */}
-              {BILLING_ENABLED && (subscription?.plan === 'free' || subscription?.status !== 'active') && (
-                <Button
-                  onClick={handleUpgradeToPro}
-                  variant="primary"
-                  className="rounded-[10px] bg-[#2563EB] hover:bg-[#1E40AF] transition-colors text-white px-8 py-3 h-[50px] text-[16px] font-medium"
-                  disabled={isRedirecting}
-                >
-                  {isRedirecting ? 'Redirecting...' : 'Upgrade to Pro'}
-                </Button>
-              )}
-
-              {/* Show manage subscription button if user has active subscription and billing is enabled */}
-              {BILLING_ENABLED && subscription?.plan !== 'free' && subscription?.status === 'active' && (
-                <Button
-                  onClick={handleManageSubscription}
-                  variant="primary"
-                  className="rounded-[10px] bg-[#2563EB] hover:bg-[#1E40AF] transition-colors text-white px-8 py-3 h-[50px] text-[16px] font-medium"
-                  disabled={isRedirecting}
-                >
-                  {isRedirecting ? 'Redirecting...' : 'Manage Subscription'}
-                </Button>
-              )}
-            </div>
-
-            {/* Usage Card */}
-            <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
-              <h2 className="text-[28px] font-bold text-black mb-6">Usage Statistics</h2>
-
-              {usage && (
-                <div className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <div className="bg-gradient-to-br from-[#eaeefe] to-[#c1cefa] rounded-xl p-6">
-                      <p className="text-sm text-[#010d3e] mb-2">Daily Limit</p>
-                      <p className="text-[32px] font-bold text-black">
-                        {usage.totalEnhancements.toLocaleString()}
-                      </p>
-                    </div>
-                    <div className="bg-gradient-to-br from-[#eaeefe] to-[#c1cefa] rounded-xl p-6">
-                      <p className="text-sm text-[#010d3e] mb-2">Used Today</p>
-                      <p className="text-[32px] font-bold text-black">{usage.usedEnhancements.toLocaleString()}</p>
-                    </div>
-                    <div className="bg-gradient-to-br from-[#eaeefe] to-[#c1cefa] rounded-xl p-6">
-                      <p className="text-sm text-[#010d3e] mb-2">Available Now</p>
-                      <p className="text-[32px] font-bold text-black">
-                        {usage.remainingEnhancements !== null ? usage.remainingEnhancements.toLocaleString() : 'Unlimited'}
-                      </p>
-                    </div>
-                    <div className="bg-gradient-to-br from-[#fef3c7] to-[#fbbf24] rounded-xl p-6">
-                      <p className="text-sm text-[#78350f] mb-2">Total (Lifetime)</p>
-                      <p className="text-[32px] font-bold text-black">
-                        {usage.totalUsage.toLocaleString()}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="pt-4 border-t border-gray-200">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm text-gray-600 mb-1">Refresh Schedule</p>
-                        <p className="text-[18px] font-semibold text-black">
-                          {usage.nextResetAt 
-                            ? `Next slot available at ${formatDateTime(usage.nextResetAt).split(', ')[1]}`
-                            : 'All slots available'}
-                        </p>
+            {/* Unified Subscription & Usage Statistics Card */}
+            <div className="bg-white rounded-[24px] shadow-sm border border-gray-100 overflow-hidden">
+              <div className="p-8 md:p-10">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                  
+                  {/* Left Column: Subscription Details */}
+                  <div className="space-y-8">
+                    <div>
+                      <div className="flex items-center gap-2 mb-4">
+                        <CreditCard className="w-5 h-5 text-blue-600" />
+                        <h2 className="text-[22px] font-bold text-black">Subscription Plan</h2>
                       </div>
-                      <div className="text-right">
-                        <p className="text-sm text-gray-600 mb-1">Progress</p>
-                        <div className="flex items-center">
-                          <div className="w-32 bg-gray-200 rounded-full h-2 mr-3">
-                            <div
-                              className="bg-[#2563EB] h-2 rounded-full"
-                              style={{
-                                width: `${Math.min((usage.usedEnhancements / usage.totalEnhancements) * 100, 100)}%`,
-                              }}
-                            />
-                          </div>
-                          <span className="text-[18px] font-semibold text-black">
-                            {Math.round((usage.usedEnhancements / usage.totalEnhancements) * 100)}%
+                      
+                      <div className="flex items-center gap-3 mb-6">
+                        <p className="text-3xl font-bold text-black">{getPlanDisplayName(subscription?.plan || 'free')}</p>
+                        {subscription?.plan !== 'free' && (
+                          <span className={`px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider border ${getStatusBadgeColor(subscription?.status || 'active')}`}>
+                            {subscription?.status || 'Active'}
                           </span>
+                        )}
+                      </div>
+
+                      {subscription?.plan !== 'free' && subscription?.currentPeriodEnd && (
+                        <div className="flex items-center gap-2 text-gray-600 mb-6">
+                          <CheckCircle2 className="w-4 h-4 text-green-500" />
+                          <p className="text-sm">
+                            Renews on {formatDateTime(subscription.currentPeriodEnd).split(',')[0]}
+                          </p>
                         </div>
+                      )}
+
+                      {subscription?.cancelAtPeriodEnd && (
+                        <div className="bg-amber-50 border border-amber-100 rounded-lg p-4 mb-6">
+                          <p className="text-amber-800 text-sm">
+                            Subscription will end on {subscription.currentPeriodEnd ? formatDateTime(subscription.currentPeriodEnd).split(',')[0] : 'period end'}.
+                          </p>
+                        </div>
+                      )}
+
+                      {!BILLING_ENABLED && (
+                        <div className="bg-blue-50/50 border border-blue-100 rounded-xl p-5 mb-6">
+                          <p className="text-sm text-blue-800 leading-relaxed">
+                            Pro subscriptions are currently in early access. You have full access to the free features while we finalize our payment systems.
+                          </p>
+                        </div>
+                      )}
+
+                      <div className="flex flex-col sm:flex-row gap-4 pt-2">
+                        {BILLING_ENABLED && (subscription?.plan === 'free' || subscription?.status !== 'active') && (
+                          <Button
+                            onClick={handleUpgradeToPro}
+                            variant="primary"
+                            className="rounded-xl bg-[#2563EB] hover:bg-[#1E40AF] transition-all text-white px-8 py-4 h-auto text-base font-semibold shadow-lg shadow-blue-500/20"
+                            disabled={isRedirecting}
+                          >
+                            {isRedirecting ? 'Processing...' : 'Upgrade to Pro'}
+                          </Button>
+                        )}
+
+                        {BILLING_ENABLED && subscription?.plan !== 'free' && subscription?.status === 'active' && (
+                          <Button
+                            onClick={handleManageSubscription}
+                            variant="primary"
+                            className="rounded-xl bg-[#2563EB] hover:bg-[#1E40AF] transition-all text-white px-8 py-4 h-auto text-base font-semibold"
+                            disabled={isRedirecting}
+                          >
+                            {isRedirecting ? 'Processing...' : 'Manage Billing'}
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </div>
-                </div>
-              )}
 
-              {!usage && (
-                <div className="text-center py-8">
-                  <p className="text-gray-600">No usage data available</p>
+                  {/* Right Column: Usage Stats */}
+                  <div className="space-y-8 lg:border-l lg:border-gray-50 lg:pl-12">
+                    <div>
+                      <div className="flex items-center gap-2 mb-6">
+                        <Activity className="w-5 h-5 text-green-600" />
+                        <h2 className="text-[22px] font-bold text-black">Prompt Usage</h2>
+                      </div>
+                      
+                      {usage ? (
+                        <div className="space-y-8">
+                          <div>
+                            <p className="text-sm text-gray-500 mb-1 font-medium uppercase tracking-wider">Remaining for today</p>
+                            <div className="flex items-baseline gap-2">
+                              {usage.remainingEnhancements !== null ? (
+                                <>
+                                  <span className="text-5xl font-bold text-black tracking-tight">{usage.remainingEnhancements.toLocaleString()}</span>
+                                  <span className="text-gray-400 text-xl font-medium">/ {usage.totalEnhancements.toLocaleString()}</span>
+                                </>
+                              ) : (
+                                <span className="text-5xl font-bold text-black tracking-tight">Unlimited</span>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="flex items-start gap-3 bg-gray-50 rounded-xl p-5">
+                            <Clock className="w-5 h-5 text-gray-400 mt-0.5" />
+                            <div>
+                              <p className="text-sm text-gray-500 mb-1 font-medium">Quota Refresh</p>
+                              <p className="text-base font-semibold text-black">
+                                {usage.nextResetAt 
+                                  ? `Next prompt available at ${formatDateTime(usage.nextResetAt).split(', ')[1]}`
+                                  : 'Your daily quota is fully available'}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <p className="text-gray-500 italic">Usage data unavailable at the moment.</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Footer: Lifetime Usage - visually less centered */}
+              {usage && (
+                <div className="bg-gray-50/50 border-t border-gray-100 p-6 px-10 flex justify-between items-center text-sm text-gray-500">
+                  <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-gray-300 rounded-full"></span>
+                    <span>Lifetime Prompts Optimized: <span className="font-semibold text-gray-700">{usage.totalUsage.toLocaleString()}</span></span>
+                  </div>
                 </div>
               )}
             </div>
@@ -406,6 +396,7 @@ export default function Subscription() {
         </div>
       </section>
     </MainLayout>
+
   );
 }
 
