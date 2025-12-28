@@ -11,8 +11,8 @@ interface MainLayoutProps {
 }
 
 const navItems = [
-  { label: 'Setup & Configuration', href: '/setup' },
   { label: 'Account Settings', href: '/account' },
+  { label: 'Setup & Configuration', href: '/setup' },
   { label: 'Subscription & Usage', href: '/subscription' },
 ];
 
